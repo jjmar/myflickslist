@@ -1,0 +1,12 @@
+#### Virtual Env ####
+
+backend/venv/*
+
+#### Python ####
+
+*.pyc
+
+#### Pycharm ####
+
+backend/mfl-revamp/.idea/*
+
