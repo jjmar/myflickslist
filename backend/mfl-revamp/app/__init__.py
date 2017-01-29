@@ -1,24 +1,15 @@
-from flask import Flask, g
+from flask import Flask
 from config import DefaultConfig
-from peewee import SqliteDatabase
+from flask_sqlalchemy import SQLAlchemy
 
-database = SqliteDatabase(DefaultConfig.DATABASE)
-
-
-def _db_connect():
-    g.db = database
-    g.db.connect()
-
-
-def _db_disconnect(request):
-    if not g.db.is_closed():
-        g.db.close()
-    return request
+db = SQLAlchemy()
 
 
 def init_app():
     app = Flask(__name__)
     app.config.from_object(DefaultConfig)
+
+    db.init_app(app)
 
     from main import main as main_blueprint
     from account import account as account_blueprint
@@ -33,8 +24,5 @@ def init_app():
     app.register_blueprint(list_blueprint)
     app.register_blueprint(movie_blueprint)
     app.register_blueprint(search_blueprint)
-
-    app.before_request(_db_connect)
-    app.after_request(_db_disconnect)
 
     return app

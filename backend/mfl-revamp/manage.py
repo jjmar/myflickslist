@@ -1,24 +1,13 @@
-from app import init_app, database
-from app.models.list import List, ListItem
-from app.models.movie import Movie, Character, Actor, Video, Country, Genre, Review, Recommendation
-from app.models.user import User
+from app import init_app
+from commands import DropTables, CreateTables
 from flask_script import Manager
 
-app = init_app()
 
+app = init_app()
 manager = Manager(app)
 
-@manager.command
-def create_tables():
-    database.create_tables(models=[List, ListItem, Movie, Character, Actor, Video, Country, Genre, Recommendation,
-                                   Review, User])
+manager.add_command('create_tables', CreateTables())
+manager.add_command('drop_tables', DropTables())
 
-
-@manager.command
-def drop_tables():
-    database.drop_tables(models=[List, ListItem, Movie, Character, Actor, Video, Country, Genre, Recommendation, Review,
-                                 User])
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     manager.run()
