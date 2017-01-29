@@ -3,6 +3,9 @@ import os
 
 class DefaultConfig():
 
+    # Database
+    DATABASE = "mfl.db"
+
     # Flask Config
     DEBUG = True
 
