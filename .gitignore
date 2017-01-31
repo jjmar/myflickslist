@@ -8,8 +8,7 @@ backend/venv/*
 
 #### Pycharm ####
 
-backend/mfl-revamp/.idea/*
+backend/.idea/*
 
 #### Database ####
 *.db
-
