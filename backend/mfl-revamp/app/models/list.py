@@ -24,7 +24,7 @@ class CustomList(db.Model):
     items = relationship('CustomListItem', backref='list')
     creation_ts = db.Column(db.DateTime(), default=datetime.utcnow)
     description = db.Column(db.String(256))
-
+    private = db.Column(db.Boolean(), default=False)
 
 class DefaultListItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
