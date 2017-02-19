@@ -1,12 +1,15 @@
-from flask import Flask
 from config import DefaultConfig
+from error_handlers import handle_unprocessable_entity
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
+
+API_PREFIX = '/api'
 
 
 def init_app():
@@ -26,11 +29,14 @@ def init_app():
     from auth import auth as auth_blueprint
 
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(account_blueprint)
-    app.register_blueprint(profile_blueprint)
-    app.register_blueprint(list_blueprint)
-    app.register_blueprint(movie_blueprint)
-    app.register_blueprint(search_blueprint)
-    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(account_blueprint, url_prefix=API_PREFIX)
+    app.register_blueprint(profile_blueprint, url_prefix=API_PREFIX)
+    app.register_blueprint(list_blueprint, url_prefix=API_PREFIX)
+    app.register_blueprint(movie_blueprint, url_prefix=API_PREFIX)
+    app.register_blueprint(search_blueprint, url_prefix=API_PREFIX)
+    app.register_blueprint(auth_blueprint, url_prefix=API_PREFIX)
+
+    # Register error handlers
+    app.register_error_handler(422, handle_unprocessable_entity)
 
     return app

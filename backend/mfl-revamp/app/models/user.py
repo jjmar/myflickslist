@@ -29,8 +29,8 @@ class User(db.Model):
     friends = db.relationship('User', secondary=friendship, primaryjoin=id==friendship.c.user_id,
                               secondaryjoin=id==friendship.c.friend_id)  # M:M
 
-    profile_comments = db.relationship('Comment', foreign_keys='comment.host_id')  # 1:M
-    posted_comments = db.relationship('Comment', foreign_keys='comment.author_id', backref='author')  # 1:M
+    profile_comments = db.relationship('Comment', foreign_keys='Comment.host_id')  # 1:M
+    posted_comments = db.relationship('Comment', foreign_keys='Comment.author_id', backref='author')  # 1:M
 
     default_list = db.relationship('DefaultList', backref='owner', uselist=False)  # 1:1
     fav_list = db.relationship('FavList', backref='owner', uselist=False)  # 1:1
