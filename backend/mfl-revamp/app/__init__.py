@@ -2,9 +2,11 @@ from flask import Flask
 from config import DefaultConfig
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+jwt = JWTManager()
 
 
 def init_app():
@@ -13,6 +15,7 @@ def init_app():
 
     db.init_app(app)
     bcrypt.init_app(app)
+    jwt.init_app(app)
 
     from main import main as main_blueprint
     from account import account as account_blueprint
