@@ -11,6 +11,7 @@ class DefaultConfig():
                               os.environ.get("MFL_DB_NAME")
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
 
     # Flask Config
     DEBUG = True

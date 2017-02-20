@@ -1,5 +1,10 @@
 from webargs import fields, validate
 
+login_args = {
+    'email': fields.Str(required=True, validate=validate.Email()),
+    'password': fields.Str(required=True)
+}
+
 register_args = {
     'email': fields.Str(required=True, validate=validate.Email()),
     'username': fields.Str(required=True, validate=validate.Regexp(regex='^[a-zA-Z0-9_]{6,64}$',

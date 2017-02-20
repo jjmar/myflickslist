@@ -1,8 +1,10 @@
 from flask import jsonify
 
 
-def success_response():
+def success_response(**kwargs):
     response = {'success': 1}
+    for key, value in kwargs.iteritems():
+        response[key] = value
     rv = jsonify(response)
     rv.status_code = 200
     return rv
