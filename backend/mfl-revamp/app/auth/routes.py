@@ -1,7 +1,7 @@
 from . import auth
 from .. import db
 from ..models.user import User
-from ..responses import success_response
+from ..responses import success_response, error_response
 
 from sqlalchemy.exc import IntegrityError
 from request_args import register_args
@@ -19,10 +19,11 @@ def register(args):
     user = User(email=args['email'], username=args['username'])
     user.set_password(password=args['password'])
     db.session.add(user)
+
     try:
         db.session.commit()
     except IntegrityError, e:
-        pass
+        return error_response(409, e.orig.diag.message_detail)
     return success_response()
 
 
