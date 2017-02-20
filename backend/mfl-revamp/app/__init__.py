@@ -1,5 +1,6 @@
 from config import DefaultConfig
 from error_handlers import handle_unprocessable_entity
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt

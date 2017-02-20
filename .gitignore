@@ -9,6 +9,7 @@ backend/venv/*
 #### Pycharm ####
 
 backend/.idea/*
+backend/mfl-revamp/.idea/*
 
 #### Database ####
 *.db

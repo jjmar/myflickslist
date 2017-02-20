@@ -5,7 +5,11 @@ import datetime
 class DefaultConfig():
 
     # SQLAlchemy
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/mfl.db'
+    SQLALCHEMY_DATABASE_URI = "postgresql://" + \
+                              os.environ.get("MFL_DB_USER") + ":" + \
+                              os.environ.get("MFL_DB_PASSWORD") + "@" + \
+                              os.environ.get("MFL_DB_NAME")
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Flask Config

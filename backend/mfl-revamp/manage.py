@@ -1,5 +1,6 @@
-from app import init_app, error_handlers
+from app import init_app
 from commands import DropTables, CreateTables
+
 from flask_script import Manager
 
 
