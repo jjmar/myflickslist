@@ -5,8 +5,8 @@ from datetime import date, datetime
 
 friendship = db.Table('friendship', db.Model.metadata,
                       db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                      db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True))
-
+                      db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                      db.Column('active', db.Integer, default=0))
 
 class User(db.Model):
 
@@ -49,6 +49,16 @@ class User(db.Model):
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.pw_hash, password)
+
+    def add_friend(self, user):
+        self.friends.append(user)
+        user.friends.append(self)
+        db.session.commit()
+
+    def remove_friend(self, user):
+        self.friends.remove(user)
+        user.friends.remove(self)
+        db.session.commit()
 
 
 class Comment(db.Model):

@@ -14,7 +14,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 def login(args):
     user = User.query.filter_by(email=args['email']).first()
     if user and user.verify_password(args['password']):
-        token = create_access_token(identity=args['email'])
+        token = create_access_token(identity=user.id)
         return success_response(token=token)
     return error_response(403, "Invalid credentials")
 
@@ -37,4 +37,4 @@ def register(args):
 @jwt_required
 def protected():
     current_user = get_jwt_identity()
-    return current_user
+    return str(current_user)
