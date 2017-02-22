@@ -3,10 +3,15 @@ from app.models.list import DefaultList, FavList
 from datetime import date, datetime
 
 
-friendship = db.Table('friendship', db.Model.metadata,
-                      db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                      db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                      db.Column('active', db.Integer, default=0))
+class Friendship(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    active = db.Column(db.Integer, default=0)
+
+    def activate_friendship(self):
+        self.active = 1
+        db.session.commit()
+
 
 class User(db.Model):
 
@@ -26,8 +31,7 @@ class User(db.Model):
     about = db.Column(db.String(256))
     profile_views = db.Column(db.Integer(), default=0)
 
-    friends = db.relationship('User', secondary=friendship, primaryjoin=id==friendship.c.user_id,
-                              secondaryjoin=id==friendship.c.friend_id)  # M:M
+    friends = db.relationship('Friendship', primaryjoin=id==Friendship.user_id, lazy='dynamic')  # M:M
 
     profile_comments = db.relationship('Comment', foreign_keys='Comment.host_id')  # 1:M
     posted_comments = db.relationship('Comment', foreign_keys='Comment.author_id', backref='author')  # 1:M
@@ -50,14 +54,13 @@ class User(db.Model):
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.pw_hash, password)
 
-    def add_friend(self, user):
-        self.friends.append(user)
-        user.friends.append(self)
+    def add_friend(self, friend, active=0):
+        self.friends.append(Friendship(user_id=self.id, friend_id=friend.id, active=active))
         db.session.commit()
 
-    def remove_friend(self, user):
-        self.friends.remove(user)
-        user.friends.remove(self)
+    def remove_friend(self, friend):
+        self.friends.remove(friend)
+        friend.friends.remove(self)
         db.session.commit()
 
 

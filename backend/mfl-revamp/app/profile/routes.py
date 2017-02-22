@@ -1,5 +1,6 @@
 from . import profile
-from ..models.user import User
+from ..models.user import User, Friendship
+from .. import db
 from request_args import add_remove_friend_args
 from ..responses import success_response, error_response
 
@@ -21,13 +22,18 @@ def add_friend(args):
         return error_response(400, "User does not exist")
     elif not friendee:
         return error_response(400, "Friend does not exist")
-
-    if user is friendee:
+    elif user is friendee:
         return error_response(400, "Cannot add self as friend")
-    elif friendee in user.friends:
-        return error_response(400, "Friendship already exists")
 
-    user.add_friend(friendee)
+    friendship = db.session.query(Friendship).filter(Friendship.user_id==user.id).filter(Friendship.friend_id==friendee.id).first()
+
+    if friendship and friendship.active:
+        return error_response(400, "Friendship already exists")
+    elif friendship and not friendship.active:
+        user.add_friend(friendee, active=1)
+        friendship.activate_friendship()
+    else:
+        user.add_friend(friendee, active=0)
     return success_response()
 
 
