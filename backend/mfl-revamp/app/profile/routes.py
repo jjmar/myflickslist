@@ -96,7 +96,7 @@ def reject_friend_request(args):
     if not from_friendship:
         return error_response(400, "Friendship request doesn't exist")
 
-    db.session.remove(from_friendship)
+    db.session.delete(from_friendship)
     db.session.commit()
     return success_response()
 
