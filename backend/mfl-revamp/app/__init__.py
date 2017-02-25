@@ -30,12 +30,12 @@ def init_app():
     from auth import auth as auth_blueprint
 
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(account_blueprint, url_prefix=API_PREFIX)
-    app.register_blueprint(profile_blueprint, url_prefix=API_PREFIX)
-    app.register_blueprint(list_blueprint, url_prefix=API_PREFIX)
-    app.register_blueprint(movie_blueprint, url_prefix=API_PREFIX)
-    app.register_blueprint(search_blueprint, url_prefix=API_PREFIX)
-    app.register_blueprint(auth_blueprint, url_prefix=API_PREFIX)
+    app.register_blueprint(account_blueprint, url_prefix=API_PREFIX + '/account')
+    app.register_blueprint(profile_blueprint, url_prefix=API_PREFIX + '/profile')
+    app.register_blueprint(list_blueprint, url_prefix=API_PREFIX + '/list')
+    app.register_blueprint(movie_blueprint, url_prefix=API_PREFIX + '/movie')
+    app.register_blueprint(search_blueprint, url_prefix=API_PREFIX + '/search')
+    app.register_blueprint(auth_blueprint, url_prefix=API_PREFIX + '/auth')
 
     # Register error handlers
     app.register_error_handler(422, handle_unprocessable_entity)
