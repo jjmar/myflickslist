@@ -11,7 +11,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 # Profile info routes
 
 @profile.route('/updateinfo', methods=['POST'])
-@use_args(request_args.profile_info_args, locations=('json',))
+@use_args(request_args.set_profile_info_args, locations=('json',))
 @jwt_required
 def update_profile_info(args):
     user_id = get_jwt_identity()
@@ -25,6 +25,24 @@ def update_profile_info(args):
     db.session.add(user)
     db.session.commit()
     return success_response()
+
+
+@profile.route('/getinfo', methods=['POST'])
+@use_args(request_args.get_profile_info_args)
+def get_profile_info(args):
+    user = User.query.get(args['user_id'])
+
+    if not user:
+        return error_response('User does not exist')
+
+    response = dict()
+    response['fav_genre'] = user.fav_genre
+    response['gender'] = user.gender
+    response['location'] = user.location
+    response['website'] = user.website
+    response['about'] = user.about
+    response['username'] = user.username
+    return success_response(results=response)
 
 # Friendship routes
 
