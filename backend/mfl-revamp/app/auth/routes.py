@@ -25,9 +25,9 @@ def login(args):
 def register(args):
 
     if User.query.filter_by(email=args['email']).first():
-        return error_response('User with that email already exists')
+        return error_response(400, 'User with that email already exists')
     elif User.query.filter_by(username=args['username']).first():
-        return error_response('User with that username already exists')
+        return error_response(400, 'User with that username already exists')
 
     user = User(email=args['email'], username=args['username'])
     user.set_password(password=args['password'])
