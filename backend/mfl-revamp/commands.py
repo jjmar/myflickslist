@@ -14,3 +14,9 @@ class CreateTables(Command):
 class DropTables(Command):
     def run(self):
         db.drop_all()
+
+
+class DropCreateTables(Command):
+    def run(self):
+        db.drop_all()
+        db.create_all()

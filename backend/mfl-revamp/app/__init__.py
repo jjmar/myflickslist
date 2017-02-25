@@ -5,10 +5,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
+mail = Mail()
 
 API_PREFIX = '/api'
 
@@ -20,6 +22,7 @@ def init_app():
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    mail.init_app(app)
 
     from main import main as main_blueprint
     from account import account as account_blueprint

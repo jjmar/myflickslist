@@ -2,6 +2,8 @@ from . import auth
 from .. import db
 from ..models.user import User
 from ..responses import success_response, error_response
+from ..email import send_welcome_email
+
 import request_args
 
 from sqlalchemy.exc import IntegrityError
@@ -30,7 +32,21 @@ def register(args):
         db.session.commit()
     except IntegrityError, e:
         return error_response(409, e.orig.diag.message_detail)
+
+    send_welcome_email(recipient=args['email'], username=user.username, token=user.generate_confirm_token())
     return success_response()
+
+
+@auth.route('/verify/<token>', methods=['GET'])
+def verify_account(token):
+    user = User.verify_confirmation_token(token)
+    if user:
+        user.verified = True
+        db.session.add(user)
+        db.session.commit()
+        return success_response()
+    else:
+        return error_response(400, 'Invalid verification token')
 
 
 @auth.route('/protected', methods=['POST'])

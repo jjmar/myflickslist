@@ -2,6 +2,9 @@ from app import db, bcrypt
 from app.models.list import DefaultList, FavList
 from datetime import date, datetime
 
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask import current_app
+
 
 class Friendship(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
@@ -21,7 +24,7 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=True)
     pw_hash = db.Column(db.String(128), nullable=False)
     verified = db.Column(db.Boolean(), default=False)
-    
+
     # Profile Specific
     fav_genre = db.Column(db.String(64))
     join_date = db.Column(db.Date(), default=date.today)
@@ -49,11 +52,26 @@ class User(db.Model):
         self.default_list = DefaultList(name='Default Movie List')
         self.favourites_list = FavList(name='Favourite Movies')
 
+    @classmethod
+    def verify_confirmation_token(cls, token):
+        serializer = Serializer(current_app.config['SECRET_KEY'])
+
+        try:
+            data = serializer.loads(token)
+        except:
+            return None
+
+        return User.query.get(data.get('user_id_confirm'))
+
     def set_password(self, password):
         self.pw_hash = bcrypt.generate_password_hash(password)
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.pw_hash, password)
+
+    def generate_confirm_token(self):
+        serializer = Serializer(current_app.config['SECRET_KEY'], expires_in=current_app.config['CONFIRM_TOKEN_EXPIRES'])
+        return serializer.dumps({'user_id_confirm': self.id})
 
     def add_friend(self, friend, active=0):
         self.friends.append(Friendship(user_id=self.id, friend_id=friend.id, active=active))
@@ -72,3 +90,4 @@ class Comment(db.Model):
 
     timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
     body = db.Column(db.String(512))
+
