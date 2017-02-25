@@ -20,7 +20,8 @@ class User(db.Model):
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(128), unique=True)
     pw_hash = db.Column(db.String(128), nullable=False)
-
+    verified = db.Column(db.Boolean(), default=False)
+    
     # Profile Specific
     fav_genre = db.Column(db.String(64))
     join_date = db.Column(db.Date(), default=date.today)
