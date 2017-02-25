@@ -6,7 +6,6 @@ from ..email import send_welcome_email
 
 import request_args
 
-from sqlalchemy.exc import IntegrityError
 from webargs.flaskparser import use_args
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
@@ -24,14 +23,16 @@ def login(args):
 @auth.route('/register', methods=['POST'])
 @use_args(request_args.register_args, locations=('json',))
 def register(args):
+
+    if User.query.filter_by(email=args['email']).first():
+        return error_response('User with that email already exists')
+    elif User.query.filter_by(username=args['username']).first():
+        return error_response('User with that username already exists')
+
     user = User(email=args['email'], username=args['username'])
     user.set_password(password=args['password'])
     db.session.add(user)
-
-    try:
-        db.session.commit()
-    except IntegrityError, e:
-        return error_response(409, e.orig.diag.message_detail)
+    db.session.commit()
 
     send_welcome_email(recipient=args['email'], username=user.username, token=user.generate_confirm_token())
     return success_response()
