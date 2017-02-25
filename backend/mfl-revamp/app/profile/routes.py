@@ -1,15 +1,36 @@
 from . import profile
 from ..models.user import User, Friendship
 from .. import db
-from request_args import friend_args
+import request_args
 from ..responses import success_response, error_response
 
 from webargs.flaskparser import use_args
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
+# Profile info routes
+
+@profile.route('/updateinfo', methods=['POST'])
+@use_args(request_args.profile_info_args, locations=('json',))
+@jwt_required
+def update_profile_info(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    user.fav_genre = args['fav_genre']
+    user.gender = args['gender']
+    user.location = args['location']
+    user.website = args['website']
+    user.about = args['about']
+
+    db.session.add(user)
+    db.session.commit()
+    return success_response()
+
+# Friendship routes
+
+
 @profile.route('/sendfriendrequest', methods=['POST'])
-@use_args(friend_args, locations=('json',))
+@use_args(request_args.friend_args, locations=('json',))
 @jwt_required
 def send_friend_request(args):
     user_id = get_jwt_identity()
@@ -49,7 +70,7 @@ def send_friend_request(args):
 
 
 @profile.route('/acceptfriendrequest', methods=['POST'])
-@use_args(friend_args, locations=('json',))
+@use_args(request_args.friend_args, locations=('json',))
 @jwt_required
 def accept_friend_request(args):
     user_id = get_jwt_identity()
@@ -77,7 +98,7 @@ def accept_friend_request(args):
 
 
 @profile.route('/rejectfriendrequest', methods=['POST'])
-@use_args(friend_args, locations=('json',))
+@use_args(request_args.friend_args, locations=('json',))
 @jwt_required
 def reject_friend_request(args):
     user_id = get_jwt_identity()
@@ -102,7 +123,7 @@ def reject_friend_request(args):
 
 
 @profile.route('/removefriend', methods=['POST'])
-@use_args(friend_args, locations=('json',))
+@use_args(request_args.friend_args, locations=('json',))
 @jwt_required
 def remove_friend(args):
     user_id = get_jwt_identity()
