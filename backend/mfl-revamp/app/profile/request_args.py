@@ -15,3 +15,12 @@ update_profile_info_args = {
 get_profile_info_args = {
     'user_id': fields.Integer(required=True)
 }
+
+post_comment_args = {
+    'host_id': fields.Integer(required=True),
+    'body': fields.Str(required=True, validate=validate.Length(min=1, max=512))
+}
+
+remove_comment_args = {
+    'comment_id': fields.Integer(required=True)
+}

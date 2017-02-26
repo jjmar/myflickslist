@@ -1,6 +1,6 @@
 from app import db
 from app.profile import profile, request_args
-from app.models.user import User, Friendship
+from app.models.user import User, Friendship, Comment
 from app.responses import success_response, error_response
 
 from webargs.flaskparser import use_args
@@ -162,5 +162,51 @@ def remove_friend(args):
 
     db.session.delete(to_friendship)
     db.session.delete(from_friendship)
+    db.session.commit()
+    return success_response()
+
+# Comments
+
+
+@profile.route('/postcomment', methods=['POST'])
+@use_args(request_args.post_comment_args, locations=('json',))
+@jwt_required
+def post_comment(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    host = User.query.get(args['host_id'])
+
+    if not host:
+        return error_response(400, 'User does not exist')
+
+    comment = Comment(host_id=user_id, author_id=args['host_id'], body=args['body'])
+    db.session.add(comment)
+    db.session.commit()
+
+    response = {"comment_id": comment.id}
+    return success_response(results=response)
+
+
+@profile.route('/removecomment', methods=['POST'])
+@use_args(request_args.remove_comment_args, locations=('json',))
+@jwt_required
+def remove_comment(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response('User does not exist')
+
+    comment_id = args['comment_id']
+    comment = Comment.query.filter_by(id=comment_id).filter_by(host_id=user_id).first()
+
+    if not comment:
+        return error_response(400, 'Comment does not exist')
+
+    db.session.delete(comment)
     db.session.commit()
     return success_response()
