@@ -6,11 +6,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
 mail = Mail()
+migrate = Migrate()
 
 API_PREFIX = '/api'
 
@@ -23,6 +25,7 @@ def init_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)
+    migrate.init_app(app, db)
 
     from main import main as main_blueprint
     from account import account as account_blueprint

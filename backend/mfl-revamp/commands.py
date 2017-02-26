@@ -20,7 +20,8 @@ class DropTables(Command):
 class Initailize(Command):
     def run(self):
         db.drop_all()
+        db.configure_mappers()
         db.create_all()
         fetch_genres()
-        fetch_all_movies(100)
+        fetch_all_movies(10)
 
