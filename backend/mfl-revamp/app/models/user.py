@@ -58,10 +58,23 @@ class User(db.Model):
 
         try:
             data = serializer.loads(token)
+            user_id = data.get('user_id_confirm')
         except:
             return None
 
-        return User.query.get(data.get('user_id_confirm'))
+        return User.query.get(user_id)
+
+    @classmethod
+    def verify_reset_password_token(cls, token):
+        serializer = Serializer(current_app.config['SECRET_KEY'])
+
+        try:
+            data = serializer.loads(token)
+            user_id = data.get('user_id_reset_pass')
+        except:
+            return None
+
+        return User.query.get(user_id)
 
     def set_password(self, password):
         self.pw_hash = bcrypt.generate_password_hash(password)
@@ -70,8 +83,12 @@ class User(db.Model):
         return bcrypt.check_password_hash(self.pw_hash, password)
 
     def generate_confirm_token(self):
-        serializer = Serializer(current_app.config['SECRET_KEY'], expires_in=current_app.config['CONFIRM_TOKEN_EXPIRES'])
+        serializer = Serializer(current_app.config['SECRET_KEY'], expires_in=current_app.config['JWT_CONFIRM_TOKEN_EXPIRES'])
         return serializer.dumps({'user_id_confirm': self.id})
+
+    def generate_reset_password_token(self):
+        serializer = Serializer(current_app.config['SECRET_KEY'], expires_in=current_app.config['JWT_RESET_PASS_TOKEN_EXPIRES'])
+        return serializer.dumps({'user_id_reset_pass': self.id})
 
     def add_friend(self, friend, active=0):
         self.friends.append(Friendship(user_id=self.id, friend_id=friend.id, active=active))

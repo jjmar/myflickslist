@@ -20,6 +20,8 @@ def _send_email(recipient, subject, template_name, **kwargs):
 
 
 def send_welcome_email(recipient, username, token):
-    _send_email(recipient=recipient, subject='Welcome to MFL!', template_name='welcome', username=username, token=token)
+    _send_email(recipient=recipient, subject='MFL - Welcome!', template_name='welcome', username=username, token=token)
 
 
+def _send_reset_password_email(recipient, username, token):
+    _send_email(recipient=recipient, subject='MFL - Reset Password', template_name='reset_password', username=username, token=token)

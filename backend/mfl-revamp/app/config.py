@@ -24,11 +24,14 @@ class DefaultConfig():
     # Flask Config
     DEBUG = True
 
-    # JWT
+    # API Access token expiration
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=7)
 
-    # Confirmation Token
-    CONFIRM_TOKEN_EXPIRES = 3600
+    # Account Verification token expiration (in seconds)
+    JWT_CONFIRM_TOKEN_EXPIRES = 3600
+
+    # Reset Password token expiration (in seconds)
+    JWT_RESET_PASS_TOKEN_EXPIRES = 3600
 
     # Keys
     SECRET_KEY = os.environ.get('MFL_REVAMP_APP_KEY')

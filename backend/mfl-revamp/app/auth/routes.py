@@ -2,7 +2,7 @@ from . import auth
 from .. import db
 from ..models.user import User
 from ..responses import success_response, error_response
-from ..email import send_welcome_email
+from ..email import send_welcome_email, _send_reset_password_email
 
 import request_args
 
@@ -38,16 +38,39 @@ def register(args):
     return success_response()
 
 
-@auth.route('/verify/<token>', methods=['GET'])
-def verify_account(token):
-    user = User.verify_confirmation_token(token)
+@auth.route('/verifyaccount', methods=['POST'])
+@use_args(request_args.verify_account_args, locations=('json',))
+def verify_account(args):
+    user = User.verify_confirmation_token(args['verify_token'])
     if user:
         user.verified = True
         db.session.add(user)
         db.session.commit()
         return success_response()
     else:
-        return error_response(400, 'Invalid verification token')
+        return error_response(400, 'Invalid token')
+
+
+@auth.route('/setnewpassword', methods=['POST'])
+@use_args(request_args.new_password_args, locations=('json',))
+def set_new_password(args):
+    user = User.verify_reset_password_token(args['reset_token'])
+    if user:
+        user.set_password(args['password'])
+        db.session.add(user)
+        db.session.commit()
+        return success_response()
+    return error_response(400, 'Invalid token')
+
+
+# Always returns successful
+@auth.route('/requestnewpassword', methods=['POST'])
+@use_args(request_args.request_password_args, locations=('json',))
+def request_new_password(args):
+    user = User.query.filter_by(email=args['email']).first()
+    if user:
+        _send_reset_password_email(recipient=args['email'], username=user.username, token=user.generate_reset_password_token())
+    return success_response()
 
 
 @auth.route('/protected', methods=['POST'])
