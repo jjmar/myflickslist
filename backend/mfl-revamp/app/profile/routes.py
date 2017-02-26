@@ -10,7 +10,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 # Profile info routes
 
 @profile.route('/updateinfo', methods=['POST'])
-@use_args(request_args.set_profile_info_args, locations=('json',))
+@use_args(request_args.update_profile_info_args, locations=('json',))
 @jwt_required
 def update_profile_info(args):
     user_id = get_jwt_identity()

@@ -2,7 +2,7 @@ from app.auth import auth, request_args
 from app import db
 from app.models.user import User
 from app.responses import success_response, error_response
-from app.email import send_welcome_email, send_reset_password_email
+from app.email import send_welcome_email
 
 from webargs.flaskparser import use_args
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -33,40 +33,6 @@ def register(args):
     db.session.commit()
 
     send_welcome_email(recipient=args['email'], username=user.username, token=user.generate_confirm_token())
-    return success_response()
-
-
-@auth.route('/verifyaccount', methods=['POST'])
-@use_args(request_args.verify_account_args, locations=('json',))
-def verify_account(args):
-    user = User.verify_confirmation_token(args['verify_token'])
-    if user:
-        user.verified = True
-        db.session.add(user)
-        db.session.commit()
-        return success_response()
-    else:
-        return error_response(400, 'Invalid token')
-
-
-@auth.route('/setnewpassword', methods=['POST'])
-@use_args(request_args.set_new_password_args, locations=('json',))
-def set_new_password(args):
-    user = User.verify_reset_password_token(args['reset_token'])
-    if user:
-        user.set_password(args['password'])
-        db.session.add(user)
-        db.session.commit()
-        return success_response()
-    return error_response(400, 'Invalid token')
-
-
-@auth.route('/requestnewpassword', methods=['POST'])
-@use_args(request_args.request_new_password_args, locations=('json',))
-def request_new_password(args):
-    user = User.query.filter_by(email=args['email']).first()
-    if user:
-        send_reset_password_email(recipient=args['email'], username=user.username, token=user.generate_reset_password_token())
     return success_response()
 
 

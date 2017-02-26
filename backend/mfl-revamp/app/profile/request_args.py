@@ -4,7 +4,7 @@ friend_args = {
     'user_id': fields.Integer(required=True)
 }
 
-set_profile_info_args = {
+update_profile_info_args = {
     'fav_genre': fields.Str(missing=None, validate=validate.Length(max=64)),
     'gender': fields.Str(missing=None, validate=lambda x: x in ('Male', 'Female')),
     'location': fields.Str(missing=None, validate=validate.Length(max=64)),
