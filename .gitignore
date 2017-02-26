@@ -13,3 +13,6 @@ backend/mfl-revamp/.idea/*
 
 #### Database ####
 *.db
+
+#### Logs ####
+*.log

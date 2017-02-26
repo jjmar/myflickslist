@@ -5,10 +5,10 @@ import datetime
 class DefaultConfig():
 
     # SQLAlchemy
-    SQLALCHEMY_DATABASE_URI = "postgresql://" + \
-                              os.environ.get("MFL_DB_USER") + ":" + \
-                              os.environ.get("MFL_DB_PASSWORD") + "@" + \
-                              os.environ.get("MFL_DB_NAME")
+    SQLALCHEMY_DATABASE_URI = 'postgresql://' + \
+                              os.environ.get('MFL_DB_USER') + ':' + \
+                              os.environ.get('MFL_DB_PASSWORD') + '@' + \
+                              os.environ.get('MFL_DB_NAME')
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
@@ -36,3 +36,7 @@ class DefaultConfig():
     # Keys
     SECRET_KEY = os.environ.get('MFL_REVAMP_APP_KEY')
     TMDB_API_KEY = os.environ.get('MFL_REVAMP_API_KEY')
+
+    # TMDB API
+
+    TMDB_API_URL = 'http://api.themoviedb.org/3/'

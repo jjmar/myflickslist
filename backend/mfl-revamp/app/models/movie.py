@@ -13,13 +13,27 @@ movie_country_lnk = db.Table('movie_country_lnk', db.Model.metadata,
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    # Movie Specific Data
+    # Movie Metadata
+    title = db.Column(db.Text())
+    status = db.Column(db.Text())
+    budget = db.Column(db.BigInteger())
+    imdb_id = db.Column(db.Text())
+    revenue = db.Column(db.BigInteger())
+    backdrop_path = db.Column(db.Text())
+    poster_path = db.Column(db.Text())
+    adult = db.Column(db.Boolean, default=False)
+    original_language = db.Column(db.Text())
+    overview = db.Column(db.Text())
+    release_date = db.Column(db.Date())
+    runtime = db.Column(db.Integer())
+    tagline = db.Column(db.Text())
+    homepage = db.Column(db.Text())
+
+    # Relationships
     genres = db.relationship('Genre', backref='movies', secondary=movie_genre_lnk)
-    characters = db.relationship('Character', backref='found_in') # Should this be many to many?
+    characters = db.relationship('Character', backref='found_in')  # Should this be many to many?
     videos = db.relationship('Video')
     countries = db.relationship('Country', backref='movies', secondary=movie_country_lnk)
-
-    # 1 : M
     recommendations = db.relationship('Recommendation', foreign_keys='Recommendation.recommendation_from',
                                       backref='from_movie')
 
@@ -41,7 +55,8 @@ class Genre(db.Model):
 
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    character = db.Column(db.Text())
+    character_name = db.Column(db.Text())
+    actor_name = db.Column(db.Text())
     # M : 1
     actor_id = db.Column(db.Integer(), db.ForeignKey('actor.id'))
     actor = db.relationship('Actor', backref='roles')
@@ -53,7 +68,7 @@ class Character(db.Model):
 
 
 class Actor(db.Model):
-    id = db.Column(db.Integer(), primary_key=True) # 1-1 w/ api
+    id = db.Column(db.Integer(), primary_key=True)  # 1-1 w/ api
     biography = db.Column(db.Text())
     birthday = db.Column(db.Date())
     deathday = db.Column(db.Date())
@@ -70,6 +85,7 @@ class Video(db.Model):
     key = db.Column(db.Text())
     type = db.Column(db.Text())
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+    name = db.Column(db.Text())
     iso_639_1 = db.Column(db.String(2))
 
 

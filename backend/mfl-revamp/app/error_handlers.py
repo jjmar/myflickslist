@@ -2,6 +2,6 @@ from responses import error_response
 
 
 def handle_unprocessable_entity(err):
-    data = getattr(err, 'data')
+    data = getattr(err, 'tmdb')
     messages = data['messages']
     return error_response(422, payload=messages)

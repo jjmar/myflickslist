@@ -3,7 +3,7 @@ from app.models.user import User, Comment, Friendship
 from app.models.list import DefaultList, DefaultListItem, FavList, FavListItem, CustomList, CustomListItem
 from app.models.movie import Movie, Character, Country, Actor, Video, Genre
 from app.models.social import Review, Recommendation
-
+from app.tmdb.fetchers import fetch_genres, fetch_all_movies
 from flask_script import Command
 
 
@@ -17,7 +17,10 @@ class DropTables(Command):
         db.drop_all()
 
 
-class DropCreateTables(Command):
+class Initailize(Command):
     def run(self):
         db.drop_all()
         db.create_all()
+        fetch_genres()
+        fetch_all_movies(100)
+
