@@ -1,9 +1,10 @@
 from app import db, bcrypt
 from app.models.list import DefaultList, FavList
-from datetime import date, datetime
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
+
+from datetime import date, datetime
 
 
 class Friendship(db.Model):

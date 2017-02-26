@@ -1,8 +1,7 @@
-from . import profile
-from ..models.user import User, Friendship
-from .. import db
-import request_args
-from ..responses import success_response, error_response
+from app import db
+from app.profile import profile, request_args
+from app.models.user import User, Friendship
+from app.responses import success_response, error_response
 
 from webargs.flaskparser import use_args
 from flask_jwt_extended import get_jwt_identity, jwt_required

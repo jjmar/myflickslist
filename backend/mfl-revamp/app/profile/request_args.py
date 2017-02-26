@@ -1,4 +1,4 @@
-from webargs import fields, validate, missing
+from webargs import fields, validate
 
 friend_args = {
     'user_id': fields.Integer(required=True)

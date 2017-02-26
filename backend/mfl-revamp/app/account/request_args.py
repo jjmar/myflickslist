@@ -1,4 +1,4 @@
-from webargs import fields, validate, missing
+from webargs import fields, validate
 
 account_email_args = {
     'email': fields.Str(required=True, validate=validate.Email())

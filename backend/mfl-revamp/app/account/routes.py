@@ -1,12 +1,11 @@
-from . import account
-import request_args
-from ..responses import success_response, error_response
-from .. import db
-from ..models.user import User
+from app.account import request_args, account
+from app import db
+from app.models.user import User
+from app.responses import success_response, error_response
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from webargs.flaskparser import use_args
-from webargs import missing
+
 
 
 @account.route('/updateemail', methods=['POST'])

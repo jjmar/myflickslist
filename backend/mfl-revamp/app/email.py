@@ -1,8 +1,9 @@
 from app import mail
 
-from threading import Thread
 from flask import current_app, render_template
 from flask_mail import Message
+
+from threading import Thread
 
 
 def _send_async_email(app, msg):
@@ -23,5 +24,5 @@ def send_welcome_email(recipient, username, token):
     _send_email(recipient=recipient, subject='MFL - Welcome!', template_name='welcome', username=username, token=token)
 
 
-def _send_reset_password_email(recipient, username, token):
+def send_reset_password_email(recipient, username, token):
     _send_email(recipient=recipient, subject='MFL - Reset Password', template_name='reset_password', username=username, token=token)

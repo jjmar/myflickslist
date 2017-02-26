@@ -1,6 +1,8 @@
 from app import db
+
 from sqlalchemy.orm import relationship
-from datetime import date, datetime
+
+from datetime import datetime
 
 
 class DefaultList(db.Model):
