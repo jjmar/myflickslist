@@ -25,4 +25,5 @@ def send_welcome_email(recipient, username, token):
 
 
 def send_reset_password_email(recipient, username, token):
-    _send_email(recipient=recipient, subject='MFL - Reset Password', template_name='reset_password', username=username, token=token)
+    _send_email(recipient=recipient, subject='MFL - Reset Password', template_name='reset_password', username=username,
+                token=token)

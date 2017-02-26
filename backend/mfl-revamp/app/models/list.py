@@ -28,6 +28,7 @@ class CustomList(db.Model):
     description = db.Column(db.String(256))
     private = db.Column(db.Boolean(), default=False)
 
+
 class DefaultListItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     movie = db.relationship('Movie')

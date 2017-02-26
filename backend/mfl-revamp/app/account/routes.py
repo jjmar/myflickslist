@@ -74,5 +74,6 @@ def set_new_password(args):
 def request_new_password(args):
     user = User.query.filter_by(email=args['email']).first()
     if user:
-        send_reset_password_email(recipient=args['email'], username=user.username, token=user.generate_reset_password_token())
+        send_reset_password_email(recipient=args['email'], username=user.username,
+                                  token=user.generate_reset_password_token())
     return success_response()

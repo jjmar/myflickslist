@@ -6,7 +6,8 @@ update_account_email_args = {
 }
 
 update_account_password_args = {
-    'password': fields.Str(required=True, validate=validate.Length(min=8, error='Password must be atleast 8 characters long'))
+    'password': fields.Str(required=True, validate=validate.Length(min=8,
+                                                                   error='Password must be atleast 8 characters long'))
 }
 
 request_new_password_args = {
@@ -19,6 +20,6 @@ verify_account_args = {
 
 set_new_password_args = {
     'reset_token': fields.Str(required=True),
-    'password': fields.Str(required=True, validate=validate.Length(min=8, error='Password must be atleast 8 characters '
-                                                                                'long'))
+    'password': fields.Str(required=True, validate=validate.Length(min=8,
+                                                                   error='Password must be atleast 8 characters long'))
 }

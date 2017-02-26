@@ -10,6 +10,6 @@ register_args = {
     'username': fields.Str(required=True, validate=validate.Regexp(regex='^[a-zA-Z0-9_]{6,64}$',
                                                                    error='Username must be an alphanumeric string '
                                                                          'between 6-64 characters in length')),
-    'password': fields.Str(required=True, validate=validate.Length(min=8, error='Password must be atleast 8 characters '
-                                                                                'long'))
+    'password': fields.Str(required=True, validate=validate.Length(min=8,
+                                                                   error='Password must be atleast 8 characters long'))
 }

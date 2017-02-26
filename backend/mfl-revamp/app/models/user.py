@@ -84,11 +84,13 @@ class User(db.Model):
         return bcrypt.check_password_hash(self.pw_hash, password)
 
     def generate_confirm_token(self):
-        serializer = Serializer(current_app.config['SECRET_KEY'], expires_in=current_app.config['JWT_CONFIRM_TOKEN_EXPIRES'])
+        serializer = Serializer(current_app.config['SECRET_KEY'],
+                                expires_in=current_app.config['JWT_CONFIRM_TOKEN_EXPIRES'])
         return serializer.dumps({'user_id_confirm': self.id})
 
     def generate_reset_password_token(self):
-        serializer = Serializer(current_app.config['SECRET_KEY'], expires_in=current_app.config['JWT_RESET_PASS_TOKEN_EXPIRES'])
+        serializer = Serializer(current_app.config['SECRET_KEY'],
+                                expires_in=current_app.config['JWT_RESET_PASS_TOKEN_EXPIRES'])
         return serializer.dumps({'user_id_reset_pass': self.id})
 
     def add_friend(self, friend, active=0):

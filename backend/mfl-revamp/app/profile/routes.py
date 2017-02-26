@@ -63,14 +63,21 @@ def send_friend_request(args):
     elif user_id == friendee_id:
         return error_response(400, "Cannot befriend self")
 
-    to_friendship = db.session.query(Friendship).filter(Friendship.user_id==user_id).filter(Friendship.friend_id==friendee_id).first()
+    to_friendship = db.session.query(Friendship)\
+                              .filter(Friendship.user_id == user_id)\
+                              .filter(Friendship.friend_id == friendee_id)\
+                              .first()
 
     if to_friendship and not to_friendship.active:
         return error_response(400, "Request already sent")
     elif to_friendship and to_friendship.active:
         return error_response(400, "Friendship already exists")
 
-    from_friendship = db.session.query(Friendship).filter(Friendship.user_id==friendee_id).filter(Friendship.friend_id==user_id).filter(Friendship.active==0).first()
+    from_friendship = db.session.query(Friendship)\
+                                .filter(Friendship.user_id == friendee_id)\
+                                .filter(Friendship.friend_id == user_id)\
+                                .filter(Friendship.active == 0)\
+                                .first()
 
     # They've already sent us an invite, create friendship
     if from_friendship:
@@ -101,7 +108,10 @@ def accept_friend_request(args):
     elif not friendee:
         return error_response(400, "Friend does not exist")
 
-    from_friendship = db.session.query(Friendship).filter(Friendship.user_id==friendee_id).filter(Friendship.friend_id==user_id).filter(Friendship.active==0).first()
+    from_friendship = db.session.query(Friendship)\
+                                .filter(Friendship.user_id == friendee_id)\
+                                .filter(Friendship.friend_id == user_id)\
+                                .filter(Friendship.active == 0).first()
 
     if not from_friendship:
         return error_response(400, "Friendship request doesn't exist")
@@ -129,7 +139,10 @@ def reject_friend_request(args):
     elif not friendee:
         return error_response(400, "Friend does not exist")
 
-    from_friendship = db.session.query(Friendship).filter(Friendship.user_id==friendee_id).filter(Friendship.friend_id==user_id).filter(Friendship.active==0).first()
+    from_friendship = db.session.query(Friendship)\
+                                .filter(Friendship.user_id == friendee_id)\
+                                .filter(Friendship.friend_id == user_id)\
+                                .filter(Friendship.active == 0).first()
 
     if not from_friendship:
         return error_response(400, "Friendship request doesn't exist")
@@ -154,8 +167,17 @@ def remove_friend(args):
     elif not friendee:
         return error_response(400, "Friend does not exist")
 
-    to_friendship = db.session.query(Friendship).filter(Friendship.user_id==user_id).filter(Friendship.friend_id==friendee_id).filter(Friendship.active==1).first()
-    from_friendship = db.session.query(Friendship).filter(Friendship.user_id==friendee_id).filter(Friendship.friend_id==user_id).filter(Friendship.active==1).first()
+    to_friendship = db.session.query(Friendship)\
+                              .filter(Friendship.user_id == user_id)\
+                              .filter(Friendship.friend_id == friendee_id)\
+                              .filter(Friendship.active == 1)\
+                              .first()
+
+    from_friendship = db.session.query(Friendship)\
+                                .filter(Friendship.user_id == friendee_id)\
+                                .filter(Friendship.friend_id == user_id)\
+                                .filter(Friendship.active == 1)\
+                                .first()
 
     if not to_friendship or not from_friendship:
         return error_response(400, "Friendship doesn't exist")
