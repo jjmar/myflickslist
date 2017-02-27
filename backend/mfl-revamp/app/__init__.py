@@ -7,12 +7,15 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_migrate import Migrate
+from sqlalchemy_searchable import make_searchable
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
 mail = Mail()
 migrate = Migrate()
+
+make_searchable()
 
 API_PREFIX = '/api'
 

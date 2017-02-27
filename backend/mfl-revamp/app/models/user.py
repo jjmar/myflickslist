@@ -3,6 +3,9 @@ from app.models.list import DefaultList, FavList
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
+from flask_sqlalchemy import BaseQuery
+from sqlalchemy_utils import TSVectorType
+from sqlalchemy_searchable import SearchQueryMixin
 
 from datetime import date, datetime
 
@@ -17,7 +20,13 @@ class Friendship(db.Model):
         db.session.commit()
 
 
+class UserQuery(BaseQuery, SearchQueryMixin):
+    pass
+
+
 class User(db.Model):
+    query_class = UserQuery
+    search_vector = db.Column(TSVectorType('username'))
 
     # Account Specific
     id = db.Column(db.Integer(), primary_key=True)

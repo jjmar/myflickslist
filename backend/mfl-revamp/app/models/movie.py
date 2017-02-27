@@ -1,5 +1,8 @@
 from app import db
 
+from sqlalchemy_utils import TSVectorType
+from flask_sqlalchemy import BaseQuery
+from sqlalchemy_searchable import SearchQueryMixin, make_searchable
 
 movie_genre_lnk = db.Table('movie_genre_lnk', db.Model.metadata,
                            db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),
@@ -10,8 +13,14 @@ movie_country_lnk = db.Table('movie_country_lnk', db.Model.metadata,
                              db.Column('country_id', db.Integer, db.ForeignKey('country.id')))
 
 
+class MovieQuery(BaseQuery, SearchQueryMixin):
+    pass
+
+
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    query_class = MovieQuery
+    search_vector = db.Column(TSVectorType('title'))
 
     # Movie Metadata
     title = db.Column(db.Text())
@@ -67,8 +76,15 @@ class Character(db.Model):
     credit_id = db.Column(db.Text())
 
 
+class ActorQuery(BaseQuery, SearchQueryMixin):
+    pass
+
+
 class Actor(db.Model):
     id = db.Column(db.Integer(), primary_key=True)  # 1-1 w/ api
+    query_class = ActorQuery
+    search_vector = db.Column(TSVectorType('name'))
+
     biography = db.Column(db.Text())
     birthday = db.Column(db.Date())
     deathday = db.Column(db.Date())

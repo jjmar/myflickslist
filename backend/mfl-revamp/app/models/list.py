@@ -1,6 +1,9 @@
 from app import db
 
 from sqlalchemy.orm import relationship
+from flask_sqlalchemy import BaseQuery
+from sqlalchemy_utils import TSVectorType
+from sqlalchemy_searchable import SearchQueryMixin
 
 from datetime import datetime
 
@@ -19,7 +22,14 @@ class FavList(db.Model):
     items = relationship('FavListItem', backref='list')
 
 
+class CustomListQUery(BaseQuery, SearchQueryMixin):
+    pass
+
+
 class CustomList(db.Model):
+    query_class = CustomListQUery
+    search_vector = db.Column(TSVectorType('name'))
+
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(64))
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
