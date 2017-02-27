@@ -15,8 +15,6 @@ jwt = JWTManager()
 mail = Mail()
 migrate = Migrate()
 
-make_searchable()
-
 API_PREFIX = '/api'
 
 
@@ -48,5 +46,5 @@ def init_app():
 
     # Register error handlers
     app.register_error_handler(422, handle_unprocessable_entity)
-
+    make_searchable()
     return app

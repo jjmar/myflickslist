@@ -2,7 +2,7 @@ from app import db
 
 from sqlalchemy_utils import TSVectorType
 from flask_sqlalchemy import BaseQuery
-from sqlalchemy_searchable import SearchQueryMixin, make_searchable
+from sqlalchemy_searchable import SearchQueryMixin
 
 movie_genre_lnk = db.Table('movie_genre_lnk', db.Model.metadata,
                            db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')),

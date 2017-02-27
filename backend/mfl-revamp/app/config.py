@@ -34,9 +34,8 @@ class DefaultConfig():
     JWT_RESET_PASS_TOKEN_EXPIRES = 3600
 
     # Keys
-    SECRET_KEY = os.environ.get('MFL_REVAMP_APP_KEY')
-    TMDB_API_KEY = os.environ.get('MFL_REVAMP_API_KEY')
+    SECRET_KEY = os.environ.get('MFL_APP_KEY')
+    TMDB_API_KEY = os.environ.get('MFL_API_KEY')
 
     # TMDB API
-
     TMDB_API_URL = 'http://api.themoviedb.org/3/'
