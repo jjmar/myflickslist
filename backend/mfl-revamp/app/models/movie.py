@@ -130,6 +130,18 @@ class Actor(db.Model):
     profile_path = db.Column(db.Text())
     imdb_id = db.Column(db.Text())
 
+    def get_actor_metadata(self):
+        ret = dict()
+        ret['biography'] = self.biography
+        ret['birthday'] = self.birthday
+        ret['deathday'] = self.deathday
+        ret['homepage'] = self.homepage
+        ret['name'] = self.name
+        ret['place_of_birth'] = self.place_of_birth
+        ret['profile_path'] = self.profile_path
+        ret['imdb_id'] = self.imdb_id
+        return ret
+
 
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
