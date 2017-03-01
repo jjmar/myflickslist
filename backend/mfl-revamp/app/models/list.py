@@ -8,18 +8,19 @@ from sqlalchemy_searchable import SearchQueryMixin
 from datetime import datetime
 
 
+class Favourite(db.Model):
+    user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
+    movie_id = db.Column(db.ForeignKey('movie.id'), primary_key=True)
+    movie = db.relationship('Movie')
+    notes = db.Column(db.String(64))
+    ordering = db.Column(db.Integer())
+
+
 class DefaultList(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(64))
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     items = relationship('DefaultListItem', backref='list')
-
-
-class FavList(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(64))
-    owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    items = relationship('FavListItem', backref='list')
 
 
 class CustomListQUery(BaseQuery, SearchQueryMixin):
@@ -55,14 +56,5 @@ class CustomListItem(db.Model):
     movie = db.relationship('Movie')
     movie_id = db.Column(db.Integer(), db.ForeignKey('movie.id'))
     list_id = db.Column(db.Integer(), db.ForeignKey('custom_list.id'))
-    notes = db.Column(db.String(64))
-    ordering = db.Column(db.Integer())
-
-
-class FavListItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    movie = db.relationship('Movie')
-    movie_id = db.Column(db.Integer(), db.ForeignKey('movie.id'))
-    list_id = db.Column(db.Integer(), db.ForeignKey('fav_list.id'))
     notes = db.Column(db.String(64))
     ordering = db.Column(db.Integer())

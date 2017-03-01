@@ -1,5 +1,5 @@
 from app import db, bcrypt
-from app.models.list import DefaultList, FavList
+from app.models.list import DefaultList, Favourite
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
@@ -51,7 +51,7 @@ class User(db.Model):
     posted_comments = db.relationship('Comment', foreign_keys='Comment.author_id', backref='author')  # 1:M
 
     default_list = db.relationship('DefaultList', backref='owner', uselist=False)  # 1:1
-    fav_list = db.relationship('FavList', backref='owner', uselist=False)  # 1:1
+    favourites = db.relationship('Favourite')  # M:M
     custom_lists = db.relationship('CustomList', backref='owner')  # 1:M
 
     recommendations = db.relationship('Recommendation', backref='author')  # 1:M
@@ -60,7 +60,6 @@ class User(db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.default_list = DefaultList(name='Default Movie List')
-        self.favourites_list = FavList(name='Favourite Movies')
 
     @classmethod
     def verify_confirmation_token(cls, token):
