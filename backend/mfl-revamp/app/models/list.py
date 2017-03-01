@@ -12,7 +12,6 @@ class Favourite(db.Model):
     user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
     movie_id = db.Column(db.ForeignKey('movie.id'), primary_key=True)
     movie = db.relationship('Movie')
-    notes = db.Column(db.String(64))
     ordering = db.Column(db.Integer())
 
 
