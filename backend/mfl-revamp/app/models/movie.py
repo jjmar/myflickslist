@@ -56,6 +56,42 @@ class Movie(db.Model):
     num_ptw = db.Column(db.Integer(), default=0)  # Number of users who are planning to watch this movie
     num_custom = db.Column(db.Integer(), default=0)  # Number of times this movie appears in custom lists
 
+    def get_movie_metadata(self):
+        ret = dict()
+        ret['title'] = self.title
+        ret['status'] = self.status
+        ret['budget'] = self.budget
+        ret['imdb_id'] = self.imdb_id
+        ret['revenue'] = self.revenue
+        ret['backdrop_path'] = self.backdrop_path
+        ret['poster_path'] = self.poster_path
+        ret['adult'] = self.adult
+        ret['orginal_language'] = self.original_language
+        ret['overview'] = self.overview
+        ret['release_date'] = self.release_date
+        ret['runtime'] = self.runtime
+        ret['tagline'] = self.tagline
+        ret['homepage'] = self.homepage
+
+        ret['genres'] = [g.genre for g in self.genres]
+        ret['characters'] = [{'character_name': c.character_name, 'actor_name': c.actor_name,
+                              'profile_path': c.profile_path, 'actor_id': c.actor_id, 'order': c.order}
+                             for c in self.characters]
+        ret['videos'] = [{'site': v.site, 'key': v.key, 'type': v.type, 'name': v.name} for v in self.videos]
+        ret['countries'] = [c.name for c in self.countries]
+        return ret
+
+    def get_movie_statistics(self):
+        ret = dict()
+        ret['avg_rating'] = self.avg_rating
+        ret['num_ratings'] = self.num_ratings
+        ret['num_members'] = self.num_members
+        ret['num_favourites'] = self.num_favourites
+        ret['num_completed'] = self.num_completed
+        ret['num_ptw'] = self.num_ptw
+        ret['num_custom'] = self.num_custom
+        return ret
+
 
 class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
