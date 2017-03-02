@@ -1,9 +1,13 @@
+from app import db
 from app.movie import movie
 from app.models.movie import Movie, Actor
+from app.models.user import User
+from app.models.social import Review
 from app.responses import success_response, error_response
 import request_args
 
 from webargs.flaskparser import use_args
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @movie.route('/getmoviedetails', methods=['POST'])
@@ -35,3 +39,53 @@ def get_actor_details(args):
         response[k] = v
     return success_response(results=response)
 
+
+@movie.route('/postreview', methods=['POST'])
+@use_args(request_args.post_movie_review_args, locations=('json',))
+@jwt_required
+def post_movie_review(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    # Check user
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    movie = Movie.query.get(args['movie_id'])
+    if not movie:
+        return error_response(400, 'Movie does not exist')
+
+    # Check user hasn't already submitted a review for that movie
+    existing_review = Review.query.filter_by(author_id=user_id).filter_by(movie_id=args['movie_id']).first()
+
+    if existing_review:
+        return error_response(400, 'User has already submitted a review for this movie')
+
+    review = Review(author_id=user_id, movie_id=args['movie_id'], body=args['body'])
+    db.session.add(review)
+    db.session.commit()
+
+    return success_response(review_id=review.id)
+
+
+@movie.route('/removereview', methods=['POST'])
+@use_args(request_args.remove_movie_review_args, locations=('json',))
+@jwt_required
+def remove_movie_review(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    # Check user
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    review = Review.query.get(args['review_id'])
+
+    if not review:
+        return error_response(400, 'Review does not exist')
+    elif review.author_id != user_id:
+        return error_response(400, 'Review does not belong to user')
+
+    db.session.delete(review)
+    db.session.commit()
+    return success_response()
