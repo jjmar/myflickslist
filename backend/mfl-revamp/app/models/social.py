@@ -22,5 +22,5 @@ class Recommendation(db.Model):
     recommendation_from = db.Column(db.Integer(), db.ForeignKey('movie.id'))
 
     # M : 1
-    recommendation_id = db.Column(db.Integer(), db.ForeignKey('movie.id'))
-    recommendation_to = db.relationship('Movie', foreign_keys='Recommendation.recommendation_id')
+    recommendation_to = db.Column(db.Integer(), db.ForeignKey('movie.id'))
+    recommendation = db.relationship('Movie', foreign_keys='Recommendation.recommendation_to')

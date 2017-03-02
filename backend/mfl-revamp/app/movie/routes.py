@@ -2,7 +2,7 @@ from app import db
 from app.movie import movie
 from app.models.movie import Movie, Actor
 from app.models.user import User
-from app.models.social import Review
+from app.models.social import Review, Recommendation
 from app.responses import success_response, error_response
 import request_args
 
@@ -47,7 +47,6 @@ def post_movie_review(args):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
-    # Check user
     if not user:
         return error_response(400, 'User does not exist')
 
@@ -75,7 +74,6 @@ def remove_movie_review(args):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
-    # Check user
     if not user:
         return error_response(400, 'User does not exist')
 
@@ -87,5 +85,61 @@ def remove_movie_review(args):
         return error_response(400, 'Review does not belong to user')
 
     db.session.delete(review)
+    db.session.commit()
+    return success_response()
+
+
+@movie.route('/postrecommendation', methods=['POST'])
+@use_args(request_args.post_recommendation_args, locations=('json',))
+@jwt_required
+def post_recommendation(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    recommendation_from = Movie.query.get(args['recommendation_from'])
+    if not recommendation_from:
+        return error_response(400, '1st movie does not exist')
+
+    recommendation_to = Movie.query.get(args['recommendation_to'])
+    if not recommendation_to:
+        return error_response(400, '2nd movie does not exist')
+
+    existing_rec = Recommendation.query.filter_by(recommendation_from=args['recommendation_from'])\
+                                       .filter_by(recommendation_to=args['recommendation_to'])\
+                                       .filter_by(author_id=user_id).first()
+
+    if existing_rec:
+        return error_response(400, 'Recommendation pairing already exists')
+
+    recommendation = Recommendation(author_id=user_id, body=args['body'],
+                                    recommendation_from=args['recommendation_from'],
+                                    recommendation_to=args['recommendation_to'])
+
+    db.session.add(recommendation)
+    db.session.commit()
+    return success_response(recommendation_id=recommendation.id)
+
+
+@movie.route('/removerecommendation', methods=['POST'])
+@use_args(request_args.remove_recommendation_args, locations=('json',))
+@jwt_required
+def remove_recommendation(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    recommendation = Recommendation.query.get(args['recommendation_id'])
+
+    if not recommendation:
+        return error_response(400, 'Recommendation does not exist')
+    elif recommendation.author_id != user_id:
+        return error_response(400, 'Recommendation does not belong to user')
+
+    db.session.delete(recommendation)
     db.session.commit()
     return success_response()
