@@ -15,11 +15,22 @@ class Favourite(db.Model):
     ordering = db.Column(db.Integer())
 
 
-class DefaultList(db.Model):
+class FlicksList(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(64))
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    items = relationship('DefaultListItem', backref='list')
+    items = relationship('FlicksListItem', backref='list')
+
+
+class FlicksListItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    movie = db.relationship('Movie')
+    movie_id = db.Column(db.Integer(), db.ForeignKey('movie.id'))
+    list_id = db.Column(db.Integer(), db.ForeignKey('flicks_list.id'))
+    notes = db.Column(db.String(64))
+    completed = db.Column(db.Boolean(), default=False)
+    rating = db.Column(db.Integer())
+    completion_date = db.Column(db.Date())
 
 
 class CustomListQUery(BaseQuery, SearchQueryMixin):
@@ -37,17 +48,6 @@ class CustomList(db.Model):
     creation_ts = db.Column(db.DateTime(), default=datetime.utcnow)
     description = db.Column(db.String(256))
     private = db.Column(db.Boolean(), default=False)
-
-
-class DefaultListItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    movie = db.relationship('Movie')
-    movie_id = db.Column(db.Integer(), db.ForeignKey('movie.id'))
-    list_id = db.Column(db.Integer(), db.ForeignKey('default_list.id'))
-    notes = db.Column(db.String(64))
-    completed = db.Column(db.Boolean(), default=False)
-    rating = db.Column(db.Integer())
-    completion_date = db.Column(db.Date())
 
 
 class CustomListItem(db.Model):
