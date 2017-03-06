@@ -26,3 +26,29 @@ def create_custom_list(args):
     db.session.add(custom_list)
     db.session.commit()
     return success_response(list_id=custom_list.id)
+
+
+@list.route('/editcustomlist', methods=['POST'])
+@use_args(request_args.edit_custom_list_args, locations=('json',))
+@jwt_required
+def edit_custom_list(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    custom_list = CustomList.query.get(args['list_id'])
+
+    if not custom_list:
+        return error_response(400, 'List does not exist')
+    elif custom_list.owner_id != user_id:
+        return error_response(400, 'List does not belong to user')
+
+    custom_list.private = args['private']
+    custom_list.description = args['description']
+
+    db.session.add(custom_list)
+    db.session.commit()
+
+    return success_response()
