@@ -17,3 +17,7 @@ add_custom_list_item_args = {
     'movie_id': fields.Integer(required=True),
     'notes': fields.Str(missing=None, validate=validate.Length(max=64))
 }
+
+delete_custom_list_item_args = {
+    'list_item_id': fields.Integer(required=True)
+}

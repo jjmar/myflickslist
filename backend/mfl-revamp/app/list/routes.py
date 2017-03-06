@@ -85,5 +85,32 @@ def add_custom_list_item(args):
     db.session.add(movie)
     db.session.commit()
 
+    return success_response(list_item_id=list_item.id)
+
+
+@list.route('/deletecustomlistitem', methods=['POST'])
+@use_args(request_args.delete_custom_list_item_args)
+@jwt_required
+def delete_custom_list_item(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    list_item = CustomListItem.query.get(args['list_item_id'])
+
+    if not list_item:
+        return error_response(400, 'List item does not exist')
+    elif list_item.list.owner_id != user_id:
+        return error_response(400, 'Item does not belong to user')
+
+    movie = Movie.query.get(list_item.movie_id)
+    movie.num_custom -= 1
+
+    db.session.delete(list_item)
+    db.session.add(movie)
+    db.session.commit()
+
     return success_response()
 
