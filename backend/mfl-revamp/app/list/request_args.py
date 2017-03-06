@@ -11,3 +11,9 @@ edit_custom_list_args = {
     'private': fields.Boolean(required=True),
     'description': fields.Str(required=True, validate=validate.Length(max=256))
 }
+
+add_custom_list_item_args = {
+    'list_id': fields.Integer(required=True),
+    'movie_id': fields.Integer(required=True),
+    'notes': fields.Str(missing=None, validate=validate.Length(max=64))
+}
