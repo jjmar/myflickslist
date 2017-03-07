@@ -1,5 +1,5 @@
 from app.list import list
-from app.models.list import FlicksList, FlicksListItem, CustomList, CustomListItem
+from app.models.list import FlicksList, FlicksListItem, CustomList, CustomListItem, Favourite
 from app.models.movie import Movie
 from app.models.user import User
 import request_args
@@ -8,6 +8,7 @@ from app import db
 
 from webargs.flaskparser import use_args
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import func
 
 
 @list.route('/createcustomlist', methods=['POST'])
@@ -113,4 +114,42 @@ def delete_custom_list_item(args):
     db.session.commit()
 
     return success_response()
+
+
+@list.route('/getusercustomlists', methods=['POST'])
+@use_args(request_args.get_user_lists_args, locations=('json',))
+def get_user_lists(args):
+    user = User.query.get(args['user_id'])
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    custom_lists = db.session.query(CustomList.name, func.count(CustomList.items).label('num_items'))\
+                             .filter_by(owner_id=user.id)\
+                             .group_by(CustomList.name).all()
+
+    response = [{'name': l.name, 'num_items': l.num_items} for l in custom_lists]
+
+    return success_response(results=response)
+
+
+@list.route('/getlistdetails', methods=['POST'])
+@use_args(request_args.get_list_details_args, locations=('json',))
+def get_list_details(args):
+
+    # return all info
+    pass
+
+
+@list.route('/getfavourites', methods=['POST'])
+@use_args(request_args.get_favourites_args, locations=('json',))
+def get_favourites(args):
+    user = User.query.get(args['user_id'])
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    favourites = db.session.query(Favourite).filter_by()
+    response = [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
+    return success_response(results=response)
 

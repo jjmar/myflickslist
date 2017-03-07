@@ -2,7 +2,7 @@ import os
 import datetime
 
 
-class DefaultConfig():
+class DefaultConfig(object):
 
     # SQLAlchemy
     SQLALCHEMY_DATABASE_URI = 'postgresql://' + \
