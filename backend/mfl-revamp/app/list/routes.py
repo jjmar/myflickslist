@@ -204,12 +204,28 @@ def get_favourites(args):
     response = [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
     return success_response(results=response)
 
+
+@list.route('/removefavourite', methods=['POST'])
+@use_args(request_args.remove_favourite_item_args)
+@jwt_required
+def remove_favourites_item(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    favourite = Favourite.query.filter_by(user_id=user_id).filter_by(movie_id=args['movie_id']).first()
+
+    if not favourite:
+        return error_response(400, 'Favourite does not exist')
+
+    db.session.delete(favourite)
+    db.session.commit()
+    return success_response()
+
+
 # TODO Stubs
-
-
-def remove_favourites_item():
-    pass
-
 
 def get_list_details():
     pass

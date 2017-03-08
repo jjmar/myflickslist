@@ -37,3 +37,7 @@ add_favourite_item_args = {
 get_favourites_args = {
     'user_id': fields.Integer(required=True)
 }
+
+remove_favourite_item_args = {
+    'movie_id': fields.Integer(required=True)
+}
