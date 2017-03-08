@@ -181,6 +181,7 @@ def add_favourite_item(args):
     elif len(user.favourites) >= 4:
         return error_response(400, 'Maximum allowable number of favourites reached (4)')
 
+    movie.num_favourites += 1
     fav = Favourite(movie_id=args['movie_id'], user_id=user_id)
 
     db.session.add(fav)
@@ -203,4 +204,24 @@ def get_favourites(args):
     response = [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
     return success_response(results=response)
 
+# TODO Stubs
 
+
+def remove_favourites_item():
+    pass
+
+
+def get_list_details():
+    pass
+
+
+def add_default_list_item():
+    pass
+
+
+def remove_default_list_item():
+    pass
+
+
+def edit_items():
+    pass
