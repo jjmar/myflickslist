@@ -24,4 +24,3 @@ class Initailize(Command):
         db.create_all()
         fetch_genres()
         fetch_all_movies(10)
-

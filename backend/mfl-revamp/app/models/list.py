@@ -19,7 +19,7 @@ class FlicksList(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(64))
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    items = relationship('FlicksListItem', backref='list', cascade='all, delete-orphan')
+    items = relationship('FlicksListItem', backref='list')
 
 
 class FlicksListItem(db.Model):
@@ -44,7 +44,7 @@ class CustomList(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(64))
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    items = relationship('CustomListItem', backref='list')
+    items = relationship('CustomListItem', cascade='all, delete-orphan', backref='list')
     creation_ts = db.Column(db.DateTime(), default=datetime.utcnow)
     description = db.Column(db.String(256))
     private = db.Column(db.Boolean(), default=False)

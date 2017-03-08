@@ -9,6 +9,7 @@ from app import db
 from webargs.flaskparser import use_args
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 
 @list.route('/createcustomlist', methods=['POST'])
@@ -133,9 +134,11 @@ def delete_custom_list(args):
     elif custom_list.owner_id != user_id:
         return error_response(400, 'List does not belong to user')
 
+    movies = db.session.query(Movie).join(CustomListItem).filter_by(list_id=custom_list.id).all()
+
     # Decrement num_custom for each movie in the list
-    for item in custom_list.items:
-        item.movie.num_custom -= 1
+    for movie in movies:
+        movie.num_custom -= 1
 
     db.session.delete(custom_list)
     db.session.commit()
