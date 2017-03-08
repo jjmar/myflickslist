@@ -215,11 +215,16 @@ def remove_favourites_item(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    favourite = Favourite.query.filter_by(user_id=user_id).filter_by(movie_id=args['movie_id']).first()
+    fav_movie= db.session.query(Favourite, Movie).join(Movie)\
+                         .filter(Favourite.user_id==user_id)\
+                         .filter(Favourite.movie_id==args['movie_id']).first()
 
-    if not favourite:
+    if not fav_movie:
         return error_response(400, 'Favourite does not exist')
 
+    favourite, movie = fav_movie
+
+    movie.num_favourites -= 1
     db.session.delete(favourite)
     db.session.commit()
     return success_response()
