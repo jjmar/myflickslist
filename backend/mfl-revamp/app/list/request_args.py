@@ -21,3 +21,7 @@ add_custom_list_item_args = {
 delete_custom_list_item_args = {
     'list_item_id': fields.Integer(required=True)
 }
+
+delete_custom_list_args = {
+    'list_id': fields.Integer(required=True)
+}

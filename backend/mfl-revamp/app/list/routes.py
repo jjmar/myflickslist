@@ -89,7 +89,7 @@ def add_custom_list_item(args):
 
 
 @list.route('/deletecustomlistitem', methods=['POST'])
-@use_args(request_args.delete_custom_list_item_args)
+@use_args(request_args.delete_custom_list_item_args, locations=('json',))
 @jwt_required
 def delete_custom_list_item(args):
     user_id = get_jwt_identity()
@@ -112,5 +112,32 @@ def delete_custom_list_item(args):
     db.session.add(movie)
     db.session.commit()
 
+    return success_response()
+
+
+@list.route('/deletecustomlist', methods=['POST'])
+@use_args(request_args.delete_custom_list_args, locations=('json',))
+@jwt_required
+def delete_custom_list(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    custom_list = CustomList.query.get(args['list_id'])
+
+    if not custom_list:
+        return error_response(400, 'List does not exist')
+    elif custom_list.owner_id != user_id:
+        return error_response(400, 'List does not belong to user')
+
+    # Decrement num_custom for each movie in the list
+    for item in custom_list.items:
+        item.movie.num_custom -= 1
+        db.session.add(item.movie)
+
+    db.session.delete(custom_list)
+    db.session.commit()
     return success_response()
 
