@@ -26,12 +26,12 @@ delete_custom_list_args = {
     'list_id': fields.Integer(required=True)
 }
 
-get_user_lists_args = {
+get_custom_lists_args = {
     'user_id': fields.Integer(required=True)
 }
 
-get_list_details_args = {
-    'list_id': fields.Integer(required=True)
+add_favourite_item_args = {
+    'movie_id': fields.Integer(required=True)
 }
 
 get_favourites_args = {

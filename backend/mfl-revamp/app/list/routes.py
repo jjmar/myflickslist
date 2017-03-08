@@ -145,9 +145,9 @@ def delete_custom_list(args):
     return success_response()
 
 
-@list.route('/getusercustomlists', methods=['POST'])
-@use_args(request_args.get_user_lists_args, locations=('json',))
-def get_user_lists(args):
+@list.route('/getcustomlists', methods=['POST'])
+@use_args(request_args.get_custom_lists_args, locations=('json',))
+def get_custom_lists(args):
     user = User.query.get(args['user_id'])
     if not user:
         return error_response(400, 'User does not exist')
@@ -162,12 +162,30 @@ def get_user_lists(args):
     return success_response(results=response)
 
 
-@list.route('/getlistdetails', methods=['POST'])
-@use_args(request_args.get_list_details_args, locations=('json',))
-def get_list_details(args):
+@list.route('/addfavourite', methods=['POST'])
+@use_args(request_args.add_favourite_item_args, locations=('json',))
+@jwt_required
+def add_favourite_item(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
 
-    # return all info
-    pass
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    movie = Movie.query.get(args['movie_id'])
+
+    if not movie:
+        return error_response(400, 'Movie does not exist')
+    elif args['movie_id'] in [fav.movie_id for fav in user.favourites]:
+        return error_response(400, 'Movie already exists in favourites')
+    elif len(user.favourites) >= 4:
+        return error_response(400, 'Maximum allowable number of favourites reached (4)')
+
+    fav = Favourite(movie_id=args['movie_id'], user_id=user_id)
+
+    db.session.add(fav)
+    db.session.commit()
+    return success_response()
 
 
 @list.route('/getfavourites', methods=['POST'])
@@ -178,7 +196,10 @@ def get_favourites(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    favourites = db.session.query(Favourite).filter_by()
+    favourites = db.session.query(Movie.title, Movie.id, Favourite.ordering)\
+                           .join(Favourite)\
+                           .filter_by(user_id=user.id).all()
+
     response = [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
     return success_response(results=response)
 
