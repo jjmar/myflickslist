@@ -152,8 +152,9 @@ def get_user_lists(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    custom_lists = db.session.query(CustomList.name, func.count(CustomList.items).label('num_items'))\
-                             .filter_by(owner_id=user.id)\
+    custom_lists = db.session.query(CustomList.name, func.count(CustomListItem.id).label('num_items'))\
+                             .outerjoin(CustomListItem)\
+                             .filter(CustomList.owner_id==user.id)\
                              .group_by(CustomList.name).all()
 
     response = [{'name': l.name, 'num_items': l.num_items} for l in custom_lists]
