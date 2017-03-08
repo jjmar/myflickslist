@@ -25,3 +25,15 @@ delete_custom_list_item_args = {
 delete_custom_list_args = {
     'list_id': fields.Integer(required=True)
 }
+
+get_user_lists_args = {
+    'user_id': fields.Integer(required=True)
+}
+
+get_list_details_args = {
+    'list_id': fields.Integer(required=True)
+}
+
+get_favourites_args = {
+    'user_id': fields.Integer(required=True)
+}

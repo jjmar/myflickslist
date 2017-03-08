@@ -19,7 +19,7 @@ class FlicksList(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(64))
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    items = relationship('FlicksListItem', backref='list')
+    items = relationship('FlicksListItem', backref='list', cascade='all, delete-orphan')
 
 
 class FlicksListItem(db.Model):
