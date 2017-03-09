@@ -21,6 +21,23 @@ class FlicksList(db.Model):
     owner_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     items = relationship('FlicksListItem', backref='list')
 
+    def get_list_details(self):
+        ret = {
+            'completed': [],
+            'ptw': []
+        }
+
+        for item in self.items:
+            if item.completed:
+                ret['completed'].append({'title': item.movie.title, 'list_item_id': item.id, 'notes': item.notes,
+                                         'completed': item.completed, 'rating': item.rating,
+                                         'completion_date': item.completion_date, 'ordering': item.ordering})
+            else:
+                ret['ptw'].append({'title': item.movie.title, 'list_item_id': item.id, 'notes': item.notes,
+                                   'completed': item.completed, 'ordering': item.ordering})
+
+        return ret
+
 
 class FlicksListItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +48,7 @@ class FlicksListItem(db.Model):
     completed = db.Column(db.Boolean(), default=False)
     rating = db.Column(db.Integer())
     completion_date = db.Column(db.Date())
+    ordering = db.Column(db.Integer())
 
 
 class CustomListQUery(BaseQuery, SearchQueryMixin):

@@ -53,3 +53,7 @@ add_flicks_list_item_args = {
 remove_flicks_list_item_args = {
     'list_item_id': fields.Integer(required=True)
 }
+
+get_flicks_list_details_args = {
+    'user_id': fields.Integer(required=True)
+}

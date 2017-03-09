@@ -295,14 +295,35 @@ def remove_flicks_list_item(args):
     db.session.commit()
     return success_response()
 
+
+@list.route('/getflickslistdetails', methods=['POST'])
+@use_args(request_args.get_flicks_list_details_args, locations=('json',))
+def get_flicks_list_details(args):
+    user = User.query.get(args['user_id'])
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    flickslist = db.session.query(FlicksList).options(joinedload('items').joinedload('movie')).filter(FlicksList.owner_id==user.id).first()
+
+    response = {}
+
+    for k, v in flickslist.get_list_details().iteritems():
+        response[k] = v
+
+    return success_response(results=response)
+
 # TODO Stubs
 
-def get_list_details():
+def get_custom_list_details():
     pass
 
 
 
 
 
-def edit_items():
+def edit_custom_list_item():
+    pas
+
+def edit_flicks_list_item():
     pass
