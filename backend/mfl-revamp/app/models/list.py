@@ -67,6 +67,19 @@ class CustomList(db.Model):
     description = db.Column(db.String(256))
     private = db.Column(db.Boolean(), default=False)
 
+    def get_list_details(self):
+        ret = {
+            'name': self.name,
+            'list_id': self.id,
+            'creation_ts': self.creation_ts,
+            'private': self.private,
+            'items': []
+        }
+
+        for item in self.items:
+            ret['items'].append({'title': item.movie.title, 'ordering': item.ordering, 'notes': item.notes})
+
+        return ret
 
 class CustomListItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)

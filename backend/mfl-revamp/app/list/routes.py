@@ -313,17 +313,36 @@ def get_flicks_list_details(args):
 
     return success_response(results=response)
 
+
+@list.route('/getcustomlistdetails', methods=['POST'])
+@use_args(request_args.get_custom_list_details_args, locations=('json',))
+def get_custom_list_details(args):
+    print get_jwt_identity()
+
+    custom_list = db.session.query(CustomList)\
+                            .options(joinedload('items').joinedload('movie'))\
+                            .filter(CustomList.id==args['list_id']).first()
+
+    if not custom_list:
+        return error_response(400, 'List does not exist')
+
+    if custom_list.private and custom_list.owner_id != get_jwt_identity():
+        return error_response(400, 'List is private')
+
+    response = custom_list.get_list_details()
+
+    return success_response(results=response)
+
 # TODO Stubs
 
-def get_custom_list_details():
-    pass
+
 
 
 
 
 
 def edit_custom_list_item():
-    pas
+    pass
 
 def edit_flicks_list_item():
     pass

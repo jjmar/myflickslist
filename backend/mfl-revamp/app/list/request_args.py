@@ -57,3 +57,7 @@ remove_flicks_list_item_args = {
 get_flicks_list_details_args = {
     'user_id': fields.Integer(required=True)
 }
+
+get_custom_list_details_args = {
+    'list_id': fields.Integer(required=True)
+}
