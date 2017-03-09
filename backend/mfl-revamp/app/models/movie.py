@@ -47,14 +47,22 @@ class Movie(db.Model):
                                       backref='from_movie')
 
     # Statistics
-    avg_rating = db.Column(db.Integer(), default=0)  # rating_sum / num_ratings
     rating_sum = db.Column(db.Integer(), default=0)  # Sum of all ratings
     num_ratings = db.Column(db.Integer(), default=0)  # Number of non-NULL ratings
-    num_members = db.Column(db.Integer(), default=0)  # Number of times present in user MFL's (num_completed + num_ptw)
     num_favourites = db.Column(db.Integer(), default=0)
-    num_completed = db.Column(db.Integer(), default=0)  # Number of users who have watched this movie
-    num_ptw = db.Column(db.Integer(), default=0)  # Number of users who are planning to watch this movie
-    num_custom = db.Column(db.Integer(), default=0)  # Number of times this movie appears in custom lists
+    num_completed = db.Column(db.Integer(), default=0)
+    num_ptw = db.Column(db.Integer(), default=0)
+    num_custom = db.Column(db.Integer(), default=0)
+
+    def add_completed_member(self, rating):
+        self.num_completed += 1
+
+        if rating:
+            self.rating_sum += rating
+            self.num_ratings += 1
+
+    def add_ptw_member(self):
+        self.num_ptw += 1
 
     def get_movie_metadata(self):
         ret = dict()
@@ -83,9 +91,8 @@ class Movie(db.Model):
 
     def get_movie_statistics(self):
         ret = dict()
-        ret['avg_rating'] = self.avg_rating
+        ret['rating_sum'] = self.rating_sum
         ret['num_ratings'] = self.num_ratings
-        ret['num_members'] = self.num_members
         ret['num_favourites'] = self.num_favourites
         ret['num_completed'] = self.num_completed
         ret['num_ptw'] = self.num_ptw

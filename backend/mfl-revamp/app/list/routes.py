@@ -215,7 +215,7 @@ def remove_favourites_item(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    fav_movie= db.session.query(Favourite, Movie).join(Movie)\
+    fav_movie = db.session.query(Favourite, Movie).join(Movie)\
                          .filter(Favourite.user_id==user_id)\
                          .filter(Favourite.movie_id==args['movie_id']).first()
 
@@ -225,9 +225,44 @@ def remove_favourites_item(args):
     favourite, movie = fav_movie
 
     movie.num_favourites -= 1
+
     db.session.delete(favourite)
     db.session.commit()
     return success_response()
+
+
+@list.route('/addflickslistitem', methods=['POST'])
+@use_args(request_args.add_flicks_list_item_args, locations=('json',))
+@jwt_required
+def add(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    movie = Movie.query.get(args['movie_id'])
+
+    if not movie:
+        return error_response(400, 'Movie does not exist')
+
+    flicks_list = FlicksList.query.filter_by(owner_id=user_id).options(joinedload('items')).first()
+
+    if movie.id in [i.movie_id for i in flicks_list.items]:
+        return error_response(400, 'Item already present in user list')
+
+    if args['completed']:
+        list_item = FlicksListItem(list_id=flicks_list.id, movie_id=movie.id, rating=args['rating'],
+                                   completed=True, notes=args['notes'], completion_date=args['completion_date'])
+        movie.add_completed_member(rating=args['rating'])
+
+    else:
+        list_item = FlicksListItem(list_id=flicks_list.id, movie_id=movie.id, notes=args['notes'])
+        movie.add_ptw_member()
+
+    db.session.add(list_item)
+    db.session.commit()
+    return success_response(list_item_id=list_item.id)
 
 
 # TODO Stubs
@@ -236,8 +271,7 @@ def get_list_details():
     pass
 
 
-def add_default_list_item():
-    pass
+
 
 
 def remove_default_list_item():
