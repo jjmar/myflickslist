@@ -61,8 +61,18 @@ class Movie(db.Model):
             self.rating_sum += rating
             self.num_ratings += 1
 
+    def remove_completed_member(self, rating):
+        self.num_completed -= 1
+
+        if rating:
+            self.rating_sum -= rating
+            self.num_ratings -= 1
+
     def add_ptw_member(self):
         self.num_ptw += 1
+
+    def remove_ptw_member(self):
+        self.num_ptw -= 1
 
     def get_movie_metadata(self):
         ret = dict()

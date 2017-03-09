@@ -234,7 +234,7 @@ def remove_favourites_item(args):
 @list.route('/addflickslistitem', methods=['POST'])
 @use_args(request_args.add_flicks_list_item_args, locations=('json',))
 @jwt_required
-def add(args):
+def add_flicks_list_item(args):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
@@ -265,6 +265,36 @@ def add(args):
     return success_response(list_item_id=list_item.id)
 
 
+@list.route('/removeflickslistitem', methods=['POST'])
+@use_args(request_args.remove_flicks_list_item_args, locations=('json',))
+@jwt_required
+def remove_flicks_list_item(args):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    list_item_movie = db.session.query(FlicksList, FlicksListItem, Movie)\
+                                .join(FlicksListItem)\
+                                .join(Movie)\
+                                .filter(FlicksList.owner_id==user_id)\
+                                .filter(FlicksListItem.id==args['list_item_id']).first()
+
+    if not list_item_movie:
+        return error_response(400, 'Item does not exist')
+
+    flickslist, list_item, movie = list_item_movie
+
+    if list_item.completed:
+        movie.remove_completed_member(rating=list_item.rating)
+    else:
+        movie.remove_ptw_member()
+
+    db.session.delete(list_item)
+    db.session.commit()
+    return success_response()
+
 # TODO Stubs
 
 def get_list_details():
@@ -272,10 +302,6 @@ def get_list_details():
 
 
 
-
-
-def remove_default_list_item():
-    pass
 
 
 def edit_items():

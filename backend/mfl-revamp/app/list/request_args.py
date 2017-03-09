@@ -49,3 +49,7 @@ add_flicks_list_item_args = {
     'completion_date': fields.Date(missing=None),
     'completed': fields.Boolean(required=True)
 }
+
+remove_flicks_list_item_args = {
+    'list_item_id': fields.Integer(required=True)
+}
