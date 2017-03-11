@@ -5,9 +5,10 @@ from app.models.user import User
 import request_args
 from app.responses import error_response, success_response
 from app import db
+from app.util import jwt_optional
 
 from webargs.flaskparser import use_args
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_raw_jwt
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
 
@@ -316,8 +317,8 @@ def get_flicks_list_details(args):
 
 @list.route('/getcustomlistdetails', methods=['POST'])
 @use_args(request_args.get_custom_list_details_args, locations=('json',))
+@jwt_optional
 def get_custom_list_details(args):
-    print get_jwt_identity()
 
     custom_list = db.session.query(CustomList)\
                             .options(joinedload('items').joinedload('movie'))\
@@ -325,21 +326,14 @@ def get_custom_list_details(args):
 
     if not custom_list:
         return error_response(400, 'List does not exist')
-
-    if custom_list.private and custom_list.owner_id != get_jwt_identity():
-        return error_response(400, 'List is private')
+    elif custom_list.private and custom_list.owner_id != get_jwt_identity():
+        return error_response(400, 'List does not exist')
 
     response = custom_list.get_list_details()
 
     return success_response(results=response)
 
 # TODO Stubs
-
-
-
-
-
-
 
 def edit_custom_list_item():
     pass
