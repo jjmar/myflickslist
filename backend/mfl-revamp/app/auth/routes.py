@@ -14,7 +14,13 @@ def login(args):
     user = User.query.filter_by(email=args['email']).first()
     if user and user.verify_password(args['password']):
         token = create_access_token(identity=user.id)
-        return success_response(token=token, verified=user.verified)
+
+        response = {
+            'token': token,
+            'verified': user.verified
+        }
+
+        return success_response(response)
 
     return error_response(403, 'Invalid credentials')
 
@@ -35,10 +41,3 @@ def register(args):
 
     send_welcome_email(recipient=args['email'], username=user.username, token=user.generate_confirm_token())
     return success_response()
-
-
-@auth.route('/protected', methods=['POST'])
-@jwt_required
-def protected():
-    current_user = get_jwt_identity()
-    return str(current_user)

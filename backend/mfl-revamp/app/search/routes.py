@@ -28,7 +28,7 @@ def movie_search():
         'total_results': pagination.total
     }
 
-    return success_response(results=response)
+    return success_response(**response)
 
 
 @search.route('/searchactors', methods=['GET'])
@@ -50,7 +50,7 @@ def actor_search():
         'total_results': pagination.total
     }
 
-    return success_response(results=response)
+    return success_response(**response)
 
 
 @search.route('/searchlists', methods=['GET'])
@@ -72,7 +72,7 @@ def list_search():
         'total_results': pagination.total
     }
 
-    return success_response(results=response)
+    return success_response(**response)
 
 
 @search.route('/searchusers', methods=['GET'])
@@ -94,6 +94,6 @@ def user_search():
         'total_results': pagination.total
     }
 
-    return success_response(results=response)
+    return success_response(**response)
 
 

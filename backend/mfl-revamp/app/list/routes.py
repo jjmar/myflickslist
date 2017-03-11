@@ -158,9 +158,11 @@ def get_custom_lists(args):
                              .filter(CustomList.owner_id==user.id)\
                              .group_by(CustomList.name).all()
 
-    response = [{'name': l.name, 'num_items': l.num_items} for l in custom_lists]
+    response = {
+        'items': [{'name': l.name, 'num_items': l.num_items} for l in custom_lists]
+    }
 
-    return success_response(results=response)
+    return success_response(**response)
 
 
 @list.route('/addfavourite', methods=['POST'])
@@ -204,7 +206,7 @@ def get_favourites(args):
 
     response = {
         'num_items': len(favourites),
-        'results': [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
+        'items': [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
     }
 
     return success_response(**response)
@@ -335,7 +337,7 @@ def get_custom_list_details(args):
 
     response = custom_list.get_list_details()
 
-    return success_response(results=response)
+    return success_response(**response)
 
 # TODO Stubs
 

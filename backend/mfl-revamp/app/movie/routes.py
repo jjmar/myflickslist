@@ -23,7 +23,7 @@ def get_movie_details(args):
         response[k] = v
     response['metadata'] = movie.get_movie_statistics()
 
-    return success_response(results=response)
+    return success_response(**response)
 
 
 @movie.route('/getactordetails', methods=['POST'])
@@ -37,7 +37,8 @@ def get_actor_details(args):
     response = {}
     for k, v in actor.get_actor_metadata().iteritems():
         response[k] = v
-    return success_response(results=response)
+
+    return success_response(**response)
 
 
 @movie.route('/postreview', methods=['POST'])
@@ -120,6 +121,7 @@ def post_recommendation(args):
 
     db.session.add(recommendation)
     db.session.commit()
+
     return success_response(recommendation_id=recommendation.id)
 
 

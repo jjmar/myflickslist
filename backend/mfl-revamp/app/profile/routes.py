@@ -34,14 +34,16 @@ def get_profile_info(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    response = dict()
-    response['fav_genre'] = user.fav_genre
-    response['gender'] = user.gender
-    response['location'] = user.location
-    response['website'] = user.website
-    response['about'] = user.about
-    response['username'] = user.username
-    return success_response(results=response)
+    response = {
+        'fav_genre': user.fav_genre,
+        'gender': user.gender,
+        'location': user.location,
+        'website': user.website,
+        'about': user.about,
+        'username': user.username
+    }
+
+    return success_response(**response)
 
 # Friendship routes
 
@@ -209,8 +211,7 @@ def post_comment(args):
     db.session.add(comment)
     db.session.commit()
 
-    response = {"comment_id": comment.id}
-    return success_response(results=response)
+    return success_response(comment_id=comment.id)
 
 
 @profile.route('/removecomment', methods=['POST'])
