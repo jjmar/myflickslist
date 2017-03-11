@@ -32,7 +32,7 @@ def get_profile_info(args):
     user = User.query.get(args['user_id'])
 
     if not user:
-        return error_response('User does not exist')
+        return error_response(400, 'User does not exist')
 
     response = dict()
     response['fav_genre'] = user.fav_genre
@@ -221,7 +221,7 @@ def remove_comment(args):
     user = User.query.get(user_id)
 
     if not user:
-        return error_response('User does not exist')
+        return error_response(400, 'User does not exist')
 
     comment_id = args['comment_id']
     comment = Comment.query.filter_by(id=comment_id).filter_by(host_id=user_id).first()

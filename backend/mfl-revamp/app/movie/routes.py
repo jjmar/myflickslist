@@ -16,7 +16,7 @@ def get_movie_details(args):
     movie = Movie.query.get(args['movie_id'])
 
     if not movie:
-        return error_response(400, "Movie does not exist")
+        return error_response(400, 'Movie does not exist')
 
     response = {}
     for k, v in movie.get_movie_metadata().iteritems():

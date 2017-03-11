@@ -10,10 +10,9 @@ def success_response(**kwargs):
     return rv
 
 
-def error_response(status_code, payload=None):
+def error_response(status_code, message):
     response = {'success': 0}
-    if payload:
-        response['message'] = payload
+    response['message'] = message
     rv = jsonify(response)
     rv.status_code = status_code
     return rv

@@ -16,7 +16,7 @@ def update_account_email(args):
     user = User.query.get(user_id)
 
     if not user:
-        return error_response('User does not exist')
+        return error_response(400, 'User does not exist')
 
     if not User.query.filter(User.email == args['email']).first():
         user.email = args['email']

@@ -15,7 +15,8 @@ def login(args):
     if user and user.verify_password(args['password']):
         token = create_access_token(identity=user.id)
         return success_response(token=token, verified=user.verified)
-    return error_response(403, "Invalid credentials")
+
+    return error_response(403, 'Invalid credentials')
 
 
 @auth.route('/register', methods=['POST'])
