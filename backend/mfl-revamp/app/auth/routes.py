@@ -14,7 +14,7 @@ def login(args):
     user = User.query.filter_by(email=args['email']).first()
     if user and user.verify_password(args['password']):
         token = create_access_token(identity=user.id)
-        return success_response(token=token)
+        return success_response(token=token, verified=user.verified)
     return error_response(403, "Invalid credentials")
 
 
