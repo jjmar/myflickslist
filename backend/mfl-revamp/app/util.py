@@ -7,6 +7,7 @@ from functools import wraps
 
 from flask_jwt_extended.utils import _decode_jwt_from_request, WrongTokenError, check_if_token_revoked, \
                                      get_blacklist_enabled, NoAuthorizationError
+from flask_sqlalchemy import Pagination
 
 
 def jwt_optional(fn):
@@ -38,3 +39,19 @@ def jwt_optional(fn):
         return fn(*args, **kwargs)
 
     return wrapper
+
+
+def paginate(query, page, per_page):
+    """
+        Pretty much flask-sqlalchemy's paginate function but can be used with any Query object (instead of just
+         BaseQuery)
+    """
+    items = query.limit(per_page).offset((page - 1) * per_page).all()
+
+    if page == 1 and len(items) < per_page:
+        total = len(items)
+    else:
+        total = query.order_by(None).count()
+
+    return Pagination(query, page, per_page, total, items)
+

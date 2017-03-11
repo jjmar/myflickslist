@@ -26,3 +26,13 @@ post_recommendation_args = {
 remove_recommendation_args = {
     'recommendation_id': fields.Integer(required=True)
 }
+
+get_movie_recommendations_args = {
+    'movie_id': fields.Integer(required=True),
+    'page': fields.Integer(missing=1, validate=validate.Range(min=1))
+}
+
+get_movie_reviews_args = {
+    'movie_id': fields.Integer(required=True),
+    'page': fields.Integer(missing=1, validate=validate.Range(min=1))
+}

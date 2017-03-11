@@ -20,7 +20,7 @@ def login(args):
             'verified': user.verified
         }
 
-        return success_response(response)
+        return success_response(**response)
 
     return error_response(403, 'Invalid credentials')
 

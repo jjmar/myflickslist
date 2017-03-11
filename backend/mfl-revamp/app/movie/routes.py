@@ -4,10 +4,14 @@ from app.models.movie import Movie, Actor
 from app.models.user import User
 from app.models.social import Review, Recommendation
 from app.responses import success_response, error_response
+from app.util import paginate
 import request_args
 
 from webargs.flaskparser import use_args
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
+RECOMMENDATIONS_PAGE_SIZE = 10
+REVIEWS_PAGE_SIZE = 10
 
 
 @movie.route('/getmoviedetails', methods=['POST'])
@@ -145,3 +149,57 @@ def remove_recommendation(args):
     db.session.delete(recommendation)
     db.session.commit()
     return success_response()
+
+
+@movie.route('/recommendations', methods=['POST'])
+@use_args(request_args.get_movie_recommendations_args, locations=('json',))
+def get_movie_recommendations(args):
+    movie = Movie.query.get(args['movie_id'])
+
+    if not movie:
+        return error_response(400, 'Movie does not exist')
+
+    query = db.session.query(Recommendation, User, Movie)\
+                                .join(User, Recommendation.author_id==User.id)\
+                                .join(Movie, Recommendation.recommendation_from==Movie.id)\
+                                .filter(Movie.id==args['movie_id'])
+
+    pagination = paginate(query, page=args['page'], per_page=RECOMMENDATIONS_PAGE_SIZE)
+
+    response = {
+        'items': [{'author': user.username, 'body': recommendation.body, 'movie_title': movie.title,
+                   'poster_path': movie.poster_path, 'movie_id': movie.id} for recommendation, user,
+                                                                               movie in pagination.items],
+        'page_size': RECOMMENDATIONS_PAGE_SIZE,
+        'current_page': pagination.page,
+        'total_pages': pagination.pages,
+        'total_results': pagination.total
+    }
+
+    return success_response(**response)
+
+
+@movie.route('/reviews', methods=['POST'])
+@use_args(request_args.get_movie_reviews_args, locations=('json',))
+def get_movie_reviews(args):
+    movie = Movie.query.get(args['movie_id'])
+
+    if not movie:
+        return error_response(400, 'Movie does not exist')
+
+    query = db.session.query(Review, User) \
+        .join(User) \
+        .filter(Review.movie_id == args['movie_id'])
+
+    pagination = paginate(query, page=args['page'], per_page=RECOMMENDATIONS_PAGE_SIZE)
+
+    response = {
+        'items': [{'author': user.username, 'body': review.body, 'timestamp': review.timestamp}
+                  for review, user in pagination.items],
+        'page_size': RECOMMENDATIONS_PAGE_SIZE,
+        'current_page': pagination.page,
+        'total_pages': pagination.pages,
+        'total_results': pagination.total
+    }
+
+    return success_response(**response)
