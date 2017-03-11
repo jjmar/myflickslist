@@ -10,9 +10,6 @@ import request_args
 from webargs.flaskparser import use_args
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-RECOMMENDATIONS_PAGE_SIZE = 10
-REVIEWS_PAGE_SIZE = 10
-
 
 @movie.route('/getmoviedetails', methods=['POST'])
 @use_args(request_args.get_movie_details_args, locations=('json',))
@@ -160,17 +157,17 @@ def get_movie_recommendations(args):
         return error_response(400, 'Movie does not exist')
 
     query = db.session.query(Recommendation, User, Movie)\
-                                .join(User, Recommendation.author_id==User.id)\
-                                .join(Movie, Recommendation.recommendation_from==Movie.id)\
-                                .filter(Movie.id==args['movie_id'])
+                      .join(User, Recommendation.author_id==User.id)\
+                      .join(Movie, Recommendation.recommendation_from==Movie.id)\
+                      .filter(Movie.id==args['movie_id'])
 
-    pagination = paginate(query, page=args['page'], per_page=RECOMMENDATIONS_PAGE_SIZE)
+    pagination = paginate(query, page=args['page'], per_page=10)
 
     response = {
         'items': [{'author': user.username, 'body': recommendation.body, 'movie_title': movie.title,
                    'poster_path': movie.poster_path, 'movie_id': movie.id} for recommendation, user,
                                                                                movie in pagination.items],
-        'page_size': RECOMMENDATIONS_PAGE_SIZE,
+        'page_size': 10,
         'current_page': pagination.page,
         'total_pages': pagination.pages,
         'total_results': pagination.total
@@ -188,15 +185,15 @@ def get_movie_reviews(args):
         return error_response(400, 'Movie does not exist')
 
     query = db.session.query(Review, User) \
-        .join(User) \
-        .filter(Review.movie_id == args['movie_id'])
+              .join(User) \
+              .filter(Review.movie_id == args['movie_id'])
 
-    pagination = paginate(query, page=args['page'], per_page=RECOMMENDATIONS_PAGE_SIZE)
+    pagination = paginate(query, page=args['page'], per_page=10)
 
     response = {
         'items': [{'author': user.username, 'body': review.body, 'timestamp': review.timestamp}
                   for review, user in pagination.items],
-        'page_size': RECOMMENDATIONS_PAGE_SIZE,
+        'page_size': 10,
         'current_page': pagination.page,
         'total_pages': pagination.pages,
         'total_results': pagination.total

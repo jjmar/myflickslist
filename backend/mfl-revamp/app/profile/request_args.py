@@ -24,3 +24,13 @@ post_comment_args = {
 remove_comment_args = {
     'comment_id': fields.Integer(required=True)
 }
+
+get_user_reviews = {
+    'user_id': fields.Integer(required=True),
+    'page': fields.Integer(missing=1, validate=validate.Range(min=1))
+}
+
+get_user_recommendations = {
+    'user_id': fields.Integer(required=True),
+    'page': fields.Integer(missing=1, validate=validate.Range(min=1))
+}
