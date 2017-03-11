@@ -202,8 +202,12 @@ def get_favourites(args):
                            .join(Favourite)\
                            .filter_by(user_id=user.id).all()
 
-    response = [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
-    return success_response(results=response)
+    response = {
+        'num_items': len(favourites),
+        'results': [{'movie_title': i.title, 'movie_id': i.id, 'ordering': i.ordering} for i in favourites]
+    }
+
+    return success_response(**response)
 
 
 @list.route('/removefavourite', methods=['POST'])
