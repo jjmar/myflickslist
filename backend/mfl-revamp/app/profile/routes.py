@@ -38,9 +38,9 @@ def get_profile_info(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    comments = db.session.query(Comment, User)\
-                         .join(User, Comment.host_id == User.id)\
-                         .filter(Comment.host_id == user.id)\
+    comments = db.session.query(Comment, User) \
+                         .join(User, Comment.host_id == User.id) \
+                         .filter(Comment.host_id == user.id) \
                          .order_by(Comment.timestamp).limit(5)
 
     response = {
@@ -76,9 +76,9 @@ def send_friend_request(args):
     elif user_id == friendee_id:
         return error_response(400, "Cannot befriend self")
 
-    to_friendship = db.session.query(Friendship)\
-                              .filter(Friendship.user_id == user_id)\
-                              .filter(Friendship.friend_id == friendee_id)\
+    to_friendship = db.session.query(Friendship) \
+                              .filter(Friendship.user_id == user_id) \
+                              .filter(Friendship.friend_id == friendee_id) \
                               .first()
 
     if to_friendship and not to_friendship.active:
@@ -86,10 +86,10 @@ def send_friend_request(args):
     elif to_friendship and to_friendship.active:
         return error_response(400, "Friendship already exists")
 
-    from_friendship = db.session.query(Friendship)\
-                                .filter(Friendship.user_id == friendee_id)\
-                                .filter(Friendship.friend_id == user_id)\
-                                .filter(Friendship.active == 0)\
+    from_friendship = db.session.query(Friendship) \
+                                .filter(Friendship.user_id == friendee_id) \
+                                .filter(Friendship.friend_id == user_id) \
+                                .filter(Friendship.active == 0) \
                                 .first()
 
     # They've already sent us an invite, create friendship
@@ -121,9 +121,9 @@ def accept_friend_request(args):
     elif not friendee:
         return error_response(400, "Friend does not exist")
 
-    from_friendship = db.session.query(Friendship)\
-                                .filter(Friendship.user_id == friendee_id)\
-                                .filter(Friendship.friend_id == user_id)\
+    from_friendship = db.session.query(Friendship) \
+                                .filter(Friendship.user_id == friendee_id) \
+                                .filter(Friendship.friend_id == user_id) \
                                 .filter(Friendship.active == 0).first()
 
     if not from_friendship:
@@ -152,9 +152,9 @@ def reject_friend_request(args):
     elif not friendee:
         return error_response(400, "Friend does not exist")
 
-    from_friendship = db.session.query(Friendship)\
-                                .filter(Friendship.user_id == friendee_id)\
-                                .filter(Friendship.friend_id == user_id)\
+    from_friendship = db.session.query(Friendship) \
+                                .filter(Friendship.user_id == friendee_id) \
+                                .filter(Friendship.friend_id == user_id) \
                                 .filter(Friendship.active == 0).first()
 
     if not from_friendship:
@@ -180,16 +180,16 @@ def remove_friend(args):
     elif not friendee:
         return error_response(400, "Friend does not exist")
 
-    to_friendship = db.session.query(Friendship)\
-                              .filter(Friendship.user_id == user_id)\
-                              .filter(Friendship.friend_id == friendee_id)\
-                              .filter(Friendship.active == 1)\
+    to_friendship = db.session.query(Friendship) \
+                              .filter(Friendship.user_id == user_id) \
+                              .filter(Friendship.friend_id == friendee_id) \
+                              .filter(Friendship.active == 1) \
                               .first()
 
-    from_friendship = db.session.query(Friendship)\
-                                .filter(Friendship.user_id == friendee_id)\
-                                .filter(Friendship.friend_id == user_id)\
-                                .filter(Friendship.active == 1)\
+    from_friendship = db.session.query(Friendship) \
+                                .filter(Friendship.user_id == friendee_id) \
+                                .filter(Friendship.friend_id == user_id) \
+                                .filter(Friendship.active == 1) \
                                 .first()
 
     if not to_friendship or not from_friendship:
@@ -254,9 +254,9 @@ def get_user_reviews(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    query = db.session.query(Review, Movie)\
-                      .join(Movie)\
-                      .filter(Review.author_id == user.id)\
+    query = db.session.query(Review, Movie) \
+                      .join(Movie) \
+                      .filter(Review.author_id == user.id) \
                       .order_by(Review.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)
@@ -287,7 +287,7 @@ def get_user_recommendations(args):
     query = db.session.query(Recommendation, movie_from, movie_to) \
                       .join(movie_from, Recommendation.recommendation_from == movie_from.id) \
                       .join(movie_to, Recommendation.recommendation_to == movie_to.id) \
-                      .filter(Recommendation.author_id == user.id)\
+                      .filter(Recommendation.author_id == user.id) \
                       .order_by(Recommendation.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)

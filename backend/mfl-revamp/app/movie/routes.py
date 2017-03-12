@@ -39,7 +39,7 @@ def get_movie_details(args):
     recommendations = db.session.query(Recommendation, User, Movie) \
                         .join(User, Recommendation.author_id == User.id) \
                         .join(Movie, Recommendation.recommendation_to == Movie.id) \
-                        .filter(Recommendation.recommendation_from == movie.id)\
+                        .filter(Recommendation.recommendation_from == movie.id) \
                         .order_by(Recommendation.timestamp).limit(2)
 
     response['recommendations'] = [{'author': user.username, 'body': recommendation.body, 'movie_title': movie.title,
@@ -134,8 +134,8 @@ def post_recommendation(args):
     if not recommendation_to:
         return error_response(400, '2nd movie does not exist')
 
-    existing_rec = Recommendation.query.filter_by(recommendation_from=args['recommendation_from'])\
-                                       .filter_by(recommendation_to=args['recommendation_to'])\
+    existing_rec = Recommendation.query.filter_by(recommendation_from=args['recommendation_from']) \
+                                       .filter_by(recommendation_to=args['recommendation_to']) \
                                        .filter_by(author_id=user_id).first()
 
     if existing_rec:
@@ -212,7 +212,7 @@ def get_movie_reviews(args):
 
     query = db.session.query(Review, User) \
                       .join(User) \
-                      .filter(Review.movie_id == args['movie_id'])\
+                      .filter(Review.movie_id == args['movie_id']) \
                       .order_by(Review.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)

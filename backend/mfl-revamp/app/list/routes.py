@@ -153,9 +153,9 @@ def get_custom_lists(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    custom_lists = db.session.query(CustomList.name, func.count(CustomListItem.id).label('num_items'))\
-                             .outerjoin(CustomListItem)\
-                             .filter(CustomList.owner_id == user.id)\
+    custom_lists = db.session.query(CustomList.name, func.count(CustomListItem.id).label('num_items')) \
+                             .outerjoin(CustomListItem) \
+                             .filter(CustomList.owner_id == user.id) \
                              .group_by(CustomList.name).all()
 
     response = {
@@ -200,8 +200,8 @@ def get_favourites(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    favourites = db.session.query(Movie.title, Movie.id, Favourite.ordering)\
-                           .join(Favourite)\
+    favourites = db.session.query(Movie.title, Movie.id, Favourite.ordering) \
+                           .join(Favourite) \
                            .filter_by(user_id=user.id).all()
 
     response = {
@@ -222,8 +222,8 @@ def remove_favourites_item(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    fav_movie = db.session.query(Favourite, Movie).join(Movie)\
-                          .filter(Favourite.user_id == user_id)\
+    fav_movie = db.session.query(Favourite, Movie).join(Movie) \
+                          .filter(Favourite.user_id == user_id) \
                           .filter(Favourite.movie_id == args['movie_id']).first()
 
     if not fav_movie:
@@ -282,10 +282,10 @@ def remove_flicks_list_item(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    list_item_movie = db.session.query(FlicksList, FlicksListItem, Movie)\
-                                .join(FlicksListItem)\
-                                .join(Movie)\
-                                .filter(FlicksList.owner_id == user_id)\
+    list_item_movie = db.session.query(FlicksList, FlicksListItem, Movie) \
+                                .join(FlicksListItem) \
+                                .join(Movie) \
+                                .filter(FlicksList.owner_id == user_id) \
                                 .filter(FlicksListItem.id == args['list_item_id']).first()
 
     if not list_item_movie:
@@ -311,8 +311,8 @@ def get_flicks_list_details(args):
     if not user:
         return error_response(400, 'User does not exist')
 
-    flickslist = db.session.query(FlicksList)\
-                           .options(joinedload('items').joinedload('movie'))\
+    flickslist = db.session.query(FlicksList) \
+                           .options(joinedload('items').joinedload('movie')) \
                            .filter(FlicksList.owner_id == user.id).first()
 
     response = {}
@@ -328,8 +328,8 @@ def get_flicks_list_details(args):
 @jwt_optional
 def get_custom_list_details(args):
 
-    custom_list = db.session.query(CustomList)\
-                            .options(joinedload('items').joinedload('movie'))\
+    custom_list = db.session.query(CustomList) \
+                            .options(joinedload('items').joinedload('movie')) \
                             .filter(CustomList.id == args['list_id']).first()
 
     if not custom_list:
