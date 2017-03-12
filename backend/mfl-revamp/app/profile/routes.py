@@ -41,7 +41,7 @@ def get_profile_info(args):
     comments = db.session.query(Comment, User)\
                          .join(User, Comment.host_id == User.id)\
                          .filter(Comment.host_id == user.id)\
-                         .order_by(Comment.timestamp).limit(10)
+                         .order_by(Comment.timestamp).limit(5)
 
     response = {
         'fav_genre': user.fav_genre,
@@ -296,6 +296,33 @@ def get_user_recommendations(args):
                    'movie_from_poster_path': movie_from.poster_path, 'movie_from_id': movie_from.id,
                    'movie_to_title': movie_to.title, 'movie_to_poster_path': movie_to.poster_path,
                    'movie_to_id': movie_to.id} for recommendation, movie_from, movie_to in pagination.items],
+        'page_size': 10,
+        'current_page': pagination.page,
+        'total_pages': pagination.pages,
+        'total_results': pagination.total
+    }
+
+    return success_response(**response)
+
+
+@profile.route('/comments', methods=['POST'])
+@use_args(request_args.get_user_comments, locations=('json',))
+def get_user_comments(args):
+    user = User.query.get(args['user_id'])
+
+    if not user:
+        return error_response(400, 'User does not exist')
+
+    query = db.session.query(Comment, User) \
+                      .join(User, Comment.host_id == User.id) \
+                      .filter(Comment.host_id == user.id) \
+                      .order_by(Comment.timestamp)
+
+    pagination = paginate(query, page=args['page'], per_page=10)
+
+    response = {
+        'items': [{'author': user.username, 'body': comment.body, 'timestamp': comment.timestamp,
+                   'author_id': user.id} for comment, user in pagination.items],
         'page_size': 10,
         'current_page': pagination.page,
         'total_pages': pagination.pages,
