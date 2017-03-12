@@ -38,13 +38,20 @@ def get_profile_info(args):
     if not user:
         return error_response(400, 'User does not exist')
 
+    comments = db.session.query(Comment, User)\
+                         .join(User, Comment.host_id == User.id)\
+                         .filter(Comment.host_id == user.id)\
+                         .order_by(Comment.timestamp).limit(10)
+
     response = {
         'fav_genre': user.fav_genre,
         'gender': user.gender,
         'location': user.location,
         'website': user.website,
         'about': user.about,
-        'username': user.username
+        'username': user.username,
+        'comments': [{'author': user.username, 'body': comment.body, 'timestamp': comment.timestamp,
+                      'author_id': user.id} for comment, user in comments]
     }
 
     return success_response(**response)
@@ -211,7 +218,7 @@ def post_comment(args):
     if not host:
         return error_response(400, 'User does not exist')
 
-    comment = Comment(host_id=user_id, author_id=args['host_id'], body=args['body'])
+    comment = Comment(author_id=user_id, host_id=args['host_id'], body=args['body'])
     db.session.add(comment)
     db.session.commit()
 
