@@ -29,7 +29,8 @@ def get_movie_details(args):
     # Add 2 most recent reviews
     reviews = db.session.query(Review, User) \
                         .join(User) \
-                        .filter(Review.movie_id == args['movie_id']).order_by(Review.timestamp).limit(2)
+                        .filter(Review.movie_id == args['movie_id']) \
+                        .order_by(Review.timestamp).limit(2)
 
     response['reviews'] = [{'author': user.username, 'body': review.body, 'timestamp': review.timestamp}
                            for review, user in reviews]
@@ -211,7 +212,8 @@ def get_movie_reviews(args):
 
     query = db.session.query(Review, User) \
                       .join(User) \
-                      .filter(Review.movie_id == args['movie_id'])
+                      .filter(Review.movie_id == args['movie_id'])\
+                      .order_by(Review.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)
 
