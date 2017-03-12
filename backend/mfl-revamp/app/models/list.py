@@ -24,7 +24,8 @@ class FlicksList(db.Model):
     def get_list_details(self):
         ret = {
             'completed': [],
-            'ptw': []
+            'ptw': [],
+            'num_items': len(self.items)
         }
 
         for item in self.items:
@@ -35,6 +36,9 @@ class FlicksList(db.Model):
             else:
                 ret['ptw'].append({'title': item.movie.title, 'list_item_id': item.id, 'notes': item.notes,
                                    'completed': item.completed, 'ordering': item.ordering})
+
+        ret['num_completed'] = len(ret['completed'])
+        ret['num_ptw'] = len(ret['ptw'])
 
         return ret
 
@@ -79,7 +83,10 @@ class CustomList(db.Model):
         for item in self.items:
             ret['items'].append({'title': item.movie.title, 'ordering': item.ordering, 'notes': item.notes})
 
+        ret['num_items'] = len(ret['items'])
+
         return ret
+
 
 class CustomListItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
