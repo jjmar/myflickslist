@@ -287,7 +287,8 @@ def get_user_recommendations(args):
     query = db.session.query(Recommendation, movie_from, movie_to) \
                       .join(movie_from, Recommendation.recommendation_from == movie_from.id) \
                       .join(movie_to, Recommendation.recommendation_to == movie_to.id) \
-                      .filter(Recommendation.author_id == user.id)
+                      .filter(Recommendation.author_id == user.id)\
+                      .order_by(Recommendation.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)
 

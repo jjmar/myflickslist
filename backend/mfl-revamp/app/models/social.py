@@ -20,7 +20,7 @@ class Recommendation(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     body = db.Column(db.String(500))
     timestamp = db.Column(db.Date(), default=date.today)
-    
+
     recommendation_from = db.Column(db.Integer(), db.ForeignKey('movie.id'))
 
     # M : 1

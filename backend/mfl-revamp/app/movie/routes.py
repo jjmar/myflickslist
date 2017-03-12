@@ -38,7 +38,8 @@ def get_movie_details(args):
     recommendations = db.session.query(Recommendation, User, Movie) \
                         .join(User, Recommendation.author_id == User.id) \
                         .join(Movie, Recommendation.recommendation_to == Movie.id) \
-                        .filter(Recommendation.recommendation_from == movie.id).limit(2)
+                        .filter(Recommendation.recommendation_from == movie.id)\
+                        .order_by(Recommendation.timestamp).limit(2)
 
     response['recommendations'] = [{'author': user.username, 'body': recommendation.body, 'movie_title': movie.title,
                                    'poster_path': movie.poster_path, 'movie_id': movie.id} for recommendation, user,
@@ -182,7 +183,8 @@ def get_movie_recommendations(args):
     query = db.session.query(Recommendation, User, Movie) \
                       .join(User, Recommendation.author_id == User.id) \
                       .join(Movie, Recommendation.recommendation_to == Movie.id) \
-                      .filter(Recommendation.recommendation_from == movie.id)
+                      .filter(Recommendation.recommendation_from == movie.id) \
+                      .order_by(Recommendation.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)
 
