@@ -18,3 +18,7 @@ def error_response(status_code, message):
     rv = jsonify(response)
     rv.status_code = status_code
     return rv
+
+
+def jwt_error(message):
+    return error_response(401, message)

@@ -1,5 +1,6 @@
 from config import DefaultConfig
 from error_handlers import handle_unprocessable_entity
+from app.responses import jwt_error
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -46,5 +47,11 @@ def init_app():
 
     # Register error handlers
     app.register_error_handler(422, handle_unprocessable_entity)
+
+    # Edit JWT error responses to conform to API response format
+    jwt.expired_token_loader(callback=jwt_error)
+    jwt.unauthorized_loader(callback=jwt_error)
+    jwt.invalid_token_loader(callback=jwt_error)
+
     make_searchable()
     return app
