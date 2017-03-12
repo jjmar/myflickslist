@@ -9,6 +9,7 @@ import request_args
 
 from webargs.flaskparser import use_args
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.orm import aliased
 
 
 @movie.route('/getmoviedetails', methods=['POST'])
@@ -20,8 +21,30 @@ def get_movie_details(args):
         return error_response(400, 'Movie does not exist')
 
     response = {}
+
+    # Add movie related data
     for k, v in movie.get_movie_metadata().iteritems():
         response[k] = v
+
+    # Add 2 most recent reviews
+    reviews = db.session.query(Review, User) \
+                        .join(User) \
+                        .filter(Review.movie_id == args['movie_id']).order_by(Review.timestamp).limit(2)
+
+    response['reviews'] = [{'author': user.username, 'body': review.body, 'timestamp': review.timestamp}
+                           for review, user in reviews]
+
+    # Add 2 most recent recommendations
+    recommendations = db.session.query(Recommendation, User, Movie) \
+                        .join(User, Recommendation.author_id == User.id) \
+                        .join(Movie, Recommendation.recommendation_to == Movie.id) \
+                        .filter(Recommendation.recommendation_from == movie.id).limit(2)
+
+    response['recommendations'] = [{'author': user.username, 'body': recommendation.body, 'movie_title': movie.title,
+                                   'poster_path': movie.poster_path, 'movie_id': movie.id} for recommendation, user,
+                                                                                               movie in recommendations]
+
+    # Add movie metadata
     response['metadata'] = movie.get_movie_statistics()
 
     return success_response(**response)
@@ -156,10 +179,10 @@ def get_movie_recommendations(args):
     if not movie:
         return error_response(400, 'Movie does not exist')
 
-    query = db.session.query(Recommendation, User, Movie)\
-                      .join(User, Recommendation.author_id==User.id)\
-                      .join(Movie, Recommendation.recommendation_from==Movie.id)\
-                      .filter(Movie.id == args['movie_id'])
+    query = db.session.query(Recommendation, User, Movie) \
+                      .join(User, Recommendation.author_id == User.id) \
+                      .join(Movie, Recommendation.recommendation_to == Movie.id) \
+                      .filter(Recommendation.recommendation_from == movie.id)
 
     pagination = paginate(query, page=args['page'], per_page=10)
 
@@ -185,8 +208,8 @@ def get_movie_reviews(args):
         return error_response(400, 'Movie does not exist')
 
     query = db.session.query(Review, User) \
-              .join(User) \
-              .filter(Review.movie_id == args['movie_id'])
+                      .join(User) \
+                      .filter(Review.movie_id == args['movie_id'])
 
     pagination = paginate(query, page=args['page'], per_page=10)
 
