@@ -2,7 +2,7 @@ from flask import jsonify
 
 
 def success_response(**kwargs):
-    response = {'success': 1,
+    response = {'success': True,
                 'data': {}}
     for key, value in kwargs.iteritems():
         response['data'][key] = value
@@ -12,8 +12,9 @@ def success_response(**kwargs):
 
 
 def error_response(status_code, message):
-    response = {'success': 0}
-    response['message'] = message
+    response = {'success': False,
+                'message': message
+    }
     rv = jsonify(response)
     rv.status_code = status_code
     return rv
