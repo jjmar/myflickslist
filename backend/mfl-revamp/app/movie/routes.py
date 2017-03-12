@@ -159,7 +159,7 @@ def get_movie_recommendations(args):
     query = db.session.query(Recommendation, User, Movie)\
                       .join(User, Recommendation.author_id==User.id)\
                       .join(Movie, Recommendation.recommendation_from==Movie.id)\
-                      .filter(Movie.id==args['movie_id'])
+                      .filter(Movie.id == args['movie_id'])
 
     pagination = paginate(query, page=args['page'], per_page=10)
 

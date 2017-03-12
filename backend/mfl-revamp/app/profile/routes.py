@@ -30,7 +30,7 @@ def update_profile_info(args):
     return success_response()
 
 
-@profile.route('/getinfo', methods=['POST'])
+@profile.route('/info', methods=['POST'])
 @use_args(request_args.get_profile_info_args)
 def get_profile_info(args):
     user = User.query.get(args['user_id'])
@@ -256,7 +256,7 @@ def get_user_reviews(args):
 
     query = db.session.query(Review, Movie)\
                       .join(Movie)\
-                      .filter(Review.author_id==user.id)\
+                      .filter(Review.author_id == user.id)\
                       .order_by(Review.timestamp)
 
     pagination = paginate(query, page=args['page'], per_page=10)
