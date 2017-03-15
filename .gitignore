@@ -1,6 +1,6 @@
 #### Virtual Env ####
 
-backend/venv/*
+venv/*
 
 #### Python ####
 
@@ -8,8 +8,7 @@ backend/venv/*
 
 #### Pycharm ####
 
-backend/.idea/*
-backend/mfl-revamp/.idea/*
+.idea/*
 
 #### Database ####
 *.db
