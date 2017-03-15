@@ -1,6 +1,8 @@
-from . import frontend
+from app.frontend import frontend
+
+from flask import render_template
 
 
 @frontend.route('/')
 def index():
-    return 'Hello'
+    return render_template('index.html')
