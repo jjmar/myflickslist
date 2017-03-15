@@ -1,0 +1,13 @@
+{
+  "name": "mfl-revamp",
+  "description": "App to track movies with lists",
+  "version": "0.0.0",
+  "homepage": "https://github.com/jjmar/mfl-revamp",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.6.3",
+    "bootstrap": "3.3.x",
+    "jquery": "3.1.x"
+  }
+}

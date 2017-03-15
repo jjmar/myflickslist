@@ -15,3 +15,8 @@ venv/*
 
 #### Logs ####
 *.log
+
+#### Dependencies ####
+
+app/frontend/static/bower_components/*
+app/frontend/static/node_modules/*

@@ -1,0 +1,19 @@
+{
+  "name": "mfl-revamp",
+  "version": "1.0.0",
+  "description": "App to track movies with lists",
+  "scripts": {
+    "postinstall": "bower install",
+    "prestart": "npm install",
+	"start": "python ../../../manage.py runserver"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjmar/mfl-revamp.git"
+  },
+  "author": "Justin Martin",
+  "license": "ISC",
+  "devDependencies": {
+    "bower": "^1.8.0"
+  }
+}

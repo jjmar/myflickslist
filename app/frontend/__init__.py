@@ -1,5 +1,9 @@
 from flask import Blueprint
+from flask import make_response
 
-frontend = Blueprint('frontend', __name__, template_folder='templates')
+frontend = Blueprint('frontend', __name__)
 
-import routes
+
+@frontend.route('/')
+def index():
+    return make_response(open('app/frontend/index.html').read())

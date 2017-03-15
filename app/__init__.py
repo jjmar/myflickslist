@@ -29,7 +29,7 @@ def init_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    # Register frontend blueprint
+    # Register frontenfdzd blueprint
     from app.frontend import frontend as frontend_blueprint
 
     # Register backend (api) blueprint
