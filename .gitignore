@@ -19,5 +19,5 @@ app/frontend/.idea/*
 
 #### Dependencies ####
 
-app/frontend/app/bower_components/*
-app/frontend/app/node_modules/*
+app/angular_app/bower_components/*
+app/angular_app/node_modules/*

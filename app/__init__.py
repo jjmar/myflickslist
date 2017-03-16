@@ -21,6 +21,7 @@ API_PREFIX = '/api'
 
 def init_app():
     app = Flask(__name__)
+
     app.config.from_object(DefaultConfig)
 
     db.init_app(app)
@@ -29,7 +30,9 @@ def init_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    # Register frontenfdzd blueprint
+    app.static_folder = 'angular_app'
+
+    # Register frontend blueprint
     from app.frontend import frontend as frontend_blueprint
 
     # Register backend (api) blueprint
