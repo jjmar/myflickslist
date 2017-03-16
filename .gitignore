@@ -6,9 +6,10 @@ venv/*
 
 *.pyc
 
-#### Pycharm ####
+#### Pycharm and Webstorm ####
 
 .idea/*
+app/frontend/.idea/*
 
 #### Database ####
 *.db
@@ -18,5 +19,5 @@ venv/*
 
 #### Dependencies ####
 
-app/frontend/static/bower_components/*
-app/frontend/static/node_modules/*
+app/frontend/app/bower_components/*
+app/frontend/app/node_modules/*
