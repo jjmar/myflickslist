@@ -30,11 +30,6 @@ def init_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    app.static_folder = 'angular_app'
-
-    # Register frontend blueprint
-    from app.frontend import frontend as frontend_blueprint
-
     # Register backend (api) blueprint
     from app.api.services.account import account as account_blueprint
     from app.api.services.list import list as list_blueprint
@@ -43,7 +38,6 @@ def init_app():
     from app.api.services.search import search as search_blueprint
     from app.api.services.auth import auth as auth_blueprint
 
-    app.register_blueprint(frontend_blueprint)
     app.register_blueprint(account_blueprint, url_prefix=API_PREFIX + '/account')
     app.register_blueprint(profile_blueprint, url_prefix=API_PREFIX + '/profile')
     app.register_blueprint(list_blueprint, url_prefix=API_PREFIX + '/list')

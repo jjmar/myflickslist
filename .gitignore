@@ -16,8 +16,3 @@ app/frontend/.idea/*
 
 #### Logs ####
 *.log
-
-#### Dependencies ####
-
-app/angular_app/bower_components/*
-app/angular_app/node_modules/*
