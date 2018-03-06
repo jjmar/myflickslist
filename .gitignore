@@ -6,10 +6,9 @@ env/*
 
 *.pyc
 
-#### Pycharm and Webstorm ####
+#### VS Code
 
-.idea/*
-app/frontend/.idea/*
+.vscode
 
 #### Database ####
 *.db
