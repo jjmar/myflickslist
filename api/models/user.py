@@ -94,15 +94,12 @@ class User(db.Model):
     def generate_confirm_token(self):
         serializer = Serializer(current_app.config['SECRET_KEY'],
                                 expires_in=current_app.config['JWT_CONFIRM_TOKEN_EXPIRES'])
-        s = serializer.dumps({'user_id_confirm': self.id})
-        print( s )
-        print( s.decode( 'utf-8') )
-        return s
+        return serializer.dumps({'user_id_confirm': self.id}).decode('utf-8')
 
     def generate_reset_password_token(self):
         serializer = Serializer(current_app.config['SECRET_KEY'],
                                 expires_in=current_app.config['JWT_RESET_PASS_TOKEN_EXPIRES'])
-        return serializer.dumps({'user_id_reset_pass': self.id})
+        return serializer.dumps({'user_id_reset_pass': self.id}).decode('utf-8')
 
     def add_friend(self, friend, active=0):
         self.friends.append(Friendship(user_id=self.id, friend_id=friend.id, active=active))
