@@ -20,6 +20,11 @@ class DropTables(Command):
 
 class Initailize(Command):
     def run(self):
+        db.session.execute( "DROP FUNCTION IF EXISTS actor_search_vector_update()")
+        db.session.execute( "DROP FUNCTION IF EXISTS custom_list_search_vector_update()")
+        db.session.execute( "DROP FUNCTION IF EXISTS movie_search_vector_update()")
+        db.session.execute( "DROP FUNCTION IF EXISTS user_search_vector_update()")
+        db.session.commit()
         db.drop_all()
         db.configure_mappers()
         db.create_all()

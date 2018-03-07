@@ -11,7 +11,7 @@ class DefaultConfig(object):
                               os.environ.get('MFL_DB_NAME')
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
 
     # Flask Mail
     MAIL_SERVER = 'smtp.gmail.com'

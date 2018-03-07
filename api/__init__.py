@@ -11,6 +11,8 @@ from api.error_handlers import handle_unprocessable_entity
 from api.responses import jwt_error
 
 db = SQLAlchemy()
+make_searchable()
+
 bcrypt = Bcrypt()
 jwt = JWTManager()
 mail = Mail()
@@ -53,5 +55,4 @@ def init_app():
     jwt.unauthorized_loader(callback=jwt_error)
     jwt.invalid_token_loader(callback=jwt_error)
 
-    make_searchable()
     return app
