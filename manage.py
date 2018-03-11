@@ -13,5 +13,11 @@ manager.add_command('init', Initailize())
 manager.add_command('db', MigrateCommand)
 manager.add_command('run', Server(port=9000) )
 
+@app.after_request
+def allow_cors( response ):
+    response.headers[ 'Access-Control-Allow-Origin' ] = '*'
+    response.headers[ 'Access-Control-Allow-Headers' ] = 'Content-Type'
+    return response
+
 if __name__ == '__main__':
     manager.run()
